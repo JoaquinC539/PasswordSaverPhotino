@@ -1,6 +1,7 @@
 
 
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using classes;
 using controllers;
 using Photino.NET;
@@ -8,30 +9,98 @@ using Photino.NET;
 class MessageRouter
 {
 
-    private GreetController greetController;
+    private PhotinoWindow? Window;
+
+
+    private readonly Dictionary<string, Func<Request, Task<object?>>> routes;
+    private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
     public MessageRouter()
     {
-        greetController = new GreetController();
+        Window = null;
+        var greet = new GreetController();
+        var notFound = new NotFoundController();
+        var masterPassword = new MasterPasswordController();
+        routes = new Dictionary<string, Func<Request, Task<object?>>>
+        {
+            ["greet"] = req => greet.HandleAsyncTask(req),
+            ["notFound"] = req => notFound.HandleAsyncTask(req),
+            ["count"] = req => masterPassword.HandleAsyncTask(req)
+        };
+    }
+    private void SetWindow(PhotinoWindow window)
+    {
+        if (Window == null)
+        {
+            Window = window;
+        }
     }
 
-    public void HandleRouter(PhotinoWindow window, string message)
+    public async Task HandleRouterAsync(PhotinoWindow window, string message)
     {
-        
-        var mapMsg = JsonSerializer.Deserialize<Dictionary<string, object>>(message);
-        string type = mapMsg!.ContainsKey("type") ? mapMsg["type"].ToString()! : "";
-       
-        if (type == "" || !mapMsg.ContainsKey("id"))
+        SetWindow(window);
+        Request? req;
+        try
         {
-            window.SendWebMessage("Type or id not found in request");
+            var doc = JsonDocument.Parse(message);
+            var root = doc.RootElement;
+            if (!root.TryGetProperty("type", out var t) || !root.TryGetProperty("id", out var idEl))
+            {
+                SendError(0, "invalid_request", "type or id missing");
+                return;
+            }
+            req = new Request
+            {
+                Type = t.GetString()!,
+                Id = idEl.GetInt32(),
+                Payload = root.TryGetProperty("payload", out var payloadEl) ? (JsonElement?)payloadEl : null
+            };
+        }
+        catch (Exception)
+        {
+
+            SendError(0, "invalid_request", "type or id missing");
             return;
         }
-        int id = int.Parse(mapMsg["id"].ToString()!);
-        Request req = new Request() { Type = type, Id = id, Payload = mapMsg!.ContainsKey("payload") ? mapMsg["payload"].ToString() : null };
-        if (type == "greet")
+        try
         {
-            string msgres = greetController.HandleGreet(req);            
-            window.SendWebMessage(msgres);
+            var handler = routes.ContainsKey(req.Type) ? routes[req.Type] : routes["notFound"];
+            var result = await handler(req);
+            var resp = new ViewResponse
+            {
+                Id = req.Id,
+                Type = req.Type,
+                Payload = result,
+                Success = true
+            };
+            DispatchWebSender(resp);
         }
+        catch (Exception ex)
+        {
+
+            SendError(req.Id, req.Type, ex.Message);
+        }
+        
+
     }
     
+
+    private void DispatchWebSender(ViewResponse resp)
+    {
+        Window!.SendWebMessage(JsonSerializer.Serialize(resp));
+    }
+    
+    private void SendError( int id, string type, string error)
+    {
+        var resp = new ViewResponse {
+            Id = id,
+            Type = type,
+            Success = false,
+            Error = error
+        };
+        DispatchWebSender( resp);
+    }
 }

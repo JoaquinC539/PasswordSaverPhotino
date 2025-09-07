@@ -1,10 +1,9 @@
-﻿using classes;
+﻿
+using database;
 using Photino.NET;
 using System.Drawing;
-using System.Text;
-using System.Text.Json;
 
-namespace HelloPhotinoApp
+namespace PhotinoApp
 {
     //NOTE: To hide the console window, go to the project properties and change the Output Type to Windows Application.
     // Or edit the .csproj file and change the <OutputType> tag from "WinExe" to "Exe".
@@ -14,6 +13,9 @@ namespace HelloPhotinoApp
         static void Main(string[] args)
         {
             // Window title declared here for visibility
+            DB db = DB.GetDB();
+            db.CheckOrCreateDB();
+            db.CreateOrCheckTables();
             MessageRouter messageRouter = new MessageRouter();
             string windowTitle = "Photino for .NET Demo App";
             // string pageUrl = "wwwroot/index.html";
@@ -35,11 +37,10 @@ namespace HelloPhotinoApp
                 // PhotinoWindow was instantiated by calling a registration 
                 // method like the following RegisterWebMessageReceivedHandler.
                 // This could be added in the PhotinoWinsdowOptions if preferred.
-                .RegisterWebMessageReceivedHandler((object sender, string message) =>
+                .RegisterWebMessageReceivedHandler(async (object sender, string message) =>
                 {
                     var window = (PhotinoWindow)sender;
-                    Console.WriteLine(message);
-                    messageRouter.HandleRouter(window, message);
+                    await messageRouter.HandleRouterAsync(window, message);
                     
                 })
                 

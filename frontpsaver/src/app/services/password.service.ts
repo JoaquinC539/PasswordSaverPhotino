@@ -1,42 +1,42 @@
 import { Injectable } from '@angular/core';
 import { PasswordDTO, UpdatePayload } from '../interfaces/data';
+import { MessageService } from './message.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PasswordService {
   isElectron:boolean=!!(window && window.electronAPI);
-  constructor() { }
+  constructor(private messageService:MessageService) { }
   public getMasterCount(){
-    // if(!this.isElectron) throw new Error("Not correct platform");
-    // return window.electronAPI.invoke("get-master-count","")
+   
+    return this.messageService.send("count")
+    // 
   }
   public setMasterPassword(password:string){
-    // if(!this.isElectron) throw new Error("Not correct platform");
-    // return window.electronAPI.invoke("setMaster",password)
+    return this.messageService.send("setMaster",password);
   }
-  public login(password:string){
-    // if(!this.isElectron) throw new Error("Not correct platform");
-    // return window.electronAPI.invoke("login",password);
+  public login(password:string){    
+    return this.messageService.send("login",password)
   }
   public getPasswords(){
-    // if(!this.isElectron) throw new Error("Not correct platform");
-    // return window.electronAPI.invoke("getPasswords")
+    
+    return this.messageService.send("getPasswords")
   }
   public addPassword(password:PasswordDTO){
-    // if(!this.isElectron) throw new Error("Not correct platform");
-    // return window.electronAPI.invoke("addPassword",password);
+    
+    return this.messageService.send("addPassword",password);
   }
   public getPassword(id:number){
-    // if(!this.isElectron) throw new Error("Not correct platform");
-    // return window.electronAPI.invoke("getPassword",id);
+    
+    return this.messageService.send("getPassword",id);
   }
   public updatePassword(paylaod:UpdatePayload){
-    // if(!this.isElectron) throw new Error("Not correct platform");
-    // return window.electronAPI.invoke("updatePassword",paylaod);
+    
+    return this.messageService.send("updatePassword",paylaod);
   }
   public deletePassword(id:number){
-    // if(!this.isElectron) throw new Error("Not correct platform");
-    // return window.electronAPI.invoke("deletePassword",id);
+    
+    return this.messageService.send("deletePassword",id);
   }
 }

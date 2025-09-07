@@ -4,19 +4,21 @@ using classes;
 namespace controllers;
 
 
-class GreetController
+class GreetController : IController
 {
     public GreetController() { }
 
-    public string HandleGreet(Request req)
+    public Task<object?> HandleAsyncTask(Request req)
     {
-        //  Here the request could be deserialized into necesary
-        Console.WriteLine( req.Payload.GetType());
+        var gmsg = new
+        {
+            Message = "Hello from .NET",
+            Test = new { TestText = "This is a nested text" }
+        };
 
-        GreetMessage gmsg = new GreetMessage() { Message="Hello from .NET", Test= new TestNes(){TestText="This is a nested text"}};
-
-        ViewResponse resp = new ViewResponse(req.Id, req.Type, gmsg);
-
-        return JsonSerializer.Serialize(resp);
+        return Task.FromResult<object?>(gmsg);
+        
     }
+
+    
 }

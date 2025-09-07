@@ -3,15 +3,8 @@ using classes;
 public class ViewResponse : WebRes
 {
     public int Id { get; set; }
-    public string Type { get; set; }
-
-    public object Payload { get; set; }
-
-    public ViewResponse() { }
-    public ViewResponse(int id, string type, object payload)
-    {
-        Id = id;
-        Type = type;
-        Payload = payload;
-    }
+    public string Type { get; set; } = default!;
+    public object? Payload { get; set; }
+    public bool Success { get; set; } = true;
+    public string? Error { get; set; }
 }

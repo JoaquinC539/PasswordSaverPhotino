@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {  Router, RouterOutlet } from '@angular/router';
 import { HelloService } from './services/hello.service';
 import { PasswordService } from './services/password.service';
-import { MessageService } from './services/message.service';
-import { Message } from './classes/Message';
-import { Request } from './classes/Request';
+
 
 @Component({
   selector: 'app-root',
@@ -22,25 +20,20 @@ export class AppComponent implements OnInit{
     
     this.helloService.greet()
     .then((res)=>{
-      console.log(res);
       console.log("Response got in component: ",res);
     })
     
   }
 
-  ngOnInit(): void {  
+  async ngOnInit(): Promise<void> {  
     // this.callGreet();
-    /* this.helloService.greet("Peter")
-    .then(val=>{
-      console.log(val);
-    }) */
-    //   this.passwordService.getMasterCount()
-    // .then((res)=>{      
-    //   if(!res){
-    //     this.router.navigate(["/new"])
-    //   }else{
-    //     this.router.navigate(["/login"])
-    //   }
-    // })
+   
+    const count = await this.passwordService.getMasterCount()
+    if(!count){
+      this.router.navigate(["/new"])
+    }else{
+      this.router.navigate(["/login"])
+    }
+    
   }
 }
