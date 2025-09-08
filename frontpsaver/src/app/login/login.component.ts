@@ -20,7 +20,7 @@ export class LoginComponent {
   })
   constructor(private passwordService:PasswordService,private router:Router){}
 
-  onSubmit(event:SubmitEvent){
+  async onSubmit(event:SubmitEvent){
     event.preventDefault();
     this.loading.set(true)
     this.errorMessage.set("");
@@ -28,20 +28,18 @@ export class LoginComponent {
       this.errorMessage.set("Password is required");
     }
     if(this.loginForm.value.password!==undefined && this.loginForm.value.password!==null ){
-      this.passwordService.login(this.loginForm.value.password)
-      // .then((res)=>{
-        
-      //   if((res as LoginMaster).error){this.errorMessage.set("An error looking for the password happened, reset the program");return;}
-      //   if(!(res as LoginMaster).authenticated){this.errorMessage.set("Incorrect password");return;}
-      //   this.loading.set(false)
-      //   this.router.navigate(["/manager"])
-        
-      // })
-      
+      try {
+        const res= await this.passwordService.login(this.loginForm.value.password);
+        this.loading.set(false);
+        if(!res){
+          this.errorMessage.set("Incorrect password");
+          return;
+        }
+        this.router.navigate(["/manager"])
+      } catch (error) {
+        this.errorMessage.set("An error looking for the password happened, reset the program");
+        return;
+      }
     }
-    
-
-
-
   }
 }

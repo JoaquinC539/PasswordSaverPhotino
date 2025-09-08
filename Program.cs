@@ -17,13 +17,13 @@ namespace PhotinoApp
             db.CheckOrCreateDB();
             db.CreateOrCheckTables();
             MessageRouter messageRouter = new MessageRouter();
-            string windowTitle = "Photino for .NET Demo App";
+            string windowTitle = "Password Saver";
             // string pageUrl = "wwwroot/index.html";
             var pageUrl = new Uri("http://localhost:4200");
 
             // Creating a new PhotinoWindow instance with the fluent API
             var window = new PhotinoWindow()
-                .SetTitle(windowTitle)
+                .SetTitle(windowTitle)                
                 // Resize to a percentage of the main monitor work area
                 .SetUseOsDefaultSize(false)
                 .SetSize(new Size(1024, 800))
@@ -31,7 +31,7 @@ namespace PhotinoApp
                 .Center()
                 // Users can resize windows by default.
                 // Let's make this one fixed instead.
-                .SetResizable(false)
+                .SetResizable(true)
                 
                 // Most event handlers can be registered after the
                 // PhotinoWindow was instantiated by calling a registration 

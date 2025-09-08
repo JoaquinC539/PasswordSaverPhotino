@@ -28,7 +28,9 @@ class MessageRouter
         {
             ["greet"] = req => greet.HandleAsyncTask(req),
             ["notFound"] = req => notFound.HandleAsyncTask(req),
-            ["count"] = req => masterPassword.HandleAsyncTask(req)
+            ["count"] = req => masterPassword.HandleAsyncTask(req),
+            ["setMaster"] = req => masterPassword.SetMasterPassword(req),
+            ["login"] = req => masterPassword.Login(req)
         };
     }
     private void SetWindow(PhotinoWindow window)

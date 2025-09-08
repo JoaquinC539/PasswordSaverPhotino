@@ -20,7 +20,7 @@ export class NewMasterComponent {
 
   constructor(private passwordService:PasswordService,private router:Router){}
 
-  onSubmit(event:SubmitEvent):void{
+  async onSubmit(event:SubmitEvent):Promise<void>{
     this.loading.set(true)
     this.errorMessage="";
     this.successMessage=""
@@ -37,19 +37,19 @@ export class NewMasterComponent {
       return;
     }
     if(formValue?.newPassword){
-      this.passwordService.setMasterPassword(formValue?.newPassword )
-      // .then((response)=>{
-      //   if(!response.error){
-      //     this.loading.set(false)
-      //     this.successMessage="Master password added sucessfully. \n Keep very safe this password since it is not recoverable and if it is loss the data wont be recoverable. \n This password will be asked everytime the program is opened \n Redirecting to password manager in 10 seconds";          
-      //     this.newPasswordForm.setValue({newPassword:"",retypedPassWord:""});
-      //     setTimeout(()=>{
-      //       this.router.navigate(["/manager"]);
-      //     },10000)
-      //   }else{
-      //     this.errorMessage="Master password could not be added close the program and retry it. Delete .db file is that doesn't work"
-      //   }
-      // })
+      const res= await this.passwordService.setMasterPassword(formValue?.newPassword )
+      console.log(res);
+      if(res){
+          this.successMessage="Master password added sucessfully. \n Keep very safe this password since it is not recoverable and if it is loss the data wont be recoverable. \n This password will be asked everytime the program is opened \n Redirecting to password manager in 10 seconds";          
+          this.newPasswordForm.setValue({newPassword:"",retypedPassWord:""});
+          setTimeout(()=>{
+            this.router.navigate(["/manager"]);
+          },10000)
+      }else{
+        this.errorMessage="Master password could not be added close the program and retry it. Delete .db file is that doesn't work"
+      }
+      this.loading.set(false);
+      
     }
     
     
