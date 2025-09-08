@@ -20,28 +20,21 @@ public class PasswordController : IController
     public async Task<object?> InsertPassword(Request req)
     {
 
-        var passwordDto = JsonSerializer.Deserialize<PasswordDto>(req.Payload!.Value.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        
+        var passwordDto = JsonSerializer.Deserialize<PasswordDto>(req.Payload.Value.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         var inserted = await passwordService.AddPasswordAsync(passwordDto);
 
-        return new GenericJsonObject
-        {
-            Error = inserted == null,
-            Added = inserted,
-            ErrorMessage = (inserted == false || inserted == null) ? "Password could not be inserted" : null
-        };
+        return inserted;
     }
     public async Task<object?> GetPassword(Request req)
     {
-        int id = req.Payload.Value.GetInt32();
-        if (id == null)
+        int id = req.Payload != null ? req.Payload.Value.GetInt32():0;
+        if (id == 0)
         {
-            return new GenericJsonObject
-            {
-                Error = true,
-                Added = false,
-                ErrorMessage = "There is no id"
-            };
+            return null;
         }
+        
         var password = await passwordService.GetSinglePasswordByIdASync(id);
         return password;
     }
@@ -51,40 +44,20 @@ public class PasswordController : IController
 
         if (passwordDto!.Id == null)
         {
-            return new GenericJsonObject
-            {
-                Error = true,
-                Added = false,
-                ErrorMessage = "Body doesn't have id"
-            };
+            return null;
         }
         var inserted = await passwordService.EditPasswordAsync(passwordDto);
 
-        return new GenericJsonObject
-        {
-            Error = inserted == null,
-            Added = inserted,
-            ErrorMessage = (inserted == false || inserted == null) ? "Password could not be inserted" : null
-        };
+        return inserted;
     }
     public async Task<object?> DeletePassword(Request req)
     {
-        int id = req.Payload.Value.GetInt32();
-        if (id == null)
+        int id = req.Payload != null ? req.Payload.Value.GetInt32():0;
+        if (id == 0)
         {
-            return new GenericJsonObject
-            {
-                Error = true,
-                Added = false,
-                ErrorMessage = "There is no id"
-            };
+            return null;
         }
         var deleted = await passwordService.DeletePassword(id);
-        return new GenericJsonObject
-        {
-            Error = deleted == null,
-            Added = deleted,
-            ErrorMessage = (deleted == false || deleted == null) ? "Password could not be inserted" : null
-        };
+        return deleted;
     }
 }

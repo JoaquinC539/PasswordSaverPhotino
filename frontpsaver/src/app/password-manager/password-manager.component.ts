@@ -47,12 +47,11 @@ export class PasswordManagerComponent implements OnInit {
   deletePassword(){
     const id=this.passwordToDelete();
     this.loading.set(true)
-    this.passwordService.deletePassword(id)
-    // .then((res)=>{
-    //   if(res.error) this.errorMessage.set("Error deleting password");
-    //   else this.getPasswords();
-
-    // })
+    const res=this.passwordService.deletePassword(id);
+    this.loading.set(false);
+    if(!res){this.errorMessage.set("Error deleting password");}
+    else this.getPasswords();
+    
   }
 
 }

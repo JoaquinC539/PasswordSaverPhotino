@@ -84,15 +84,7 @@ export class EditPasswordComponent  implements OnInit{
     }
     
     
-    // .then((res)=>{
-    //   if(res.error){
-    //     this.errorMessage.set("Error adding password reboot the app");
-    //   }else{
-    //     this.router.navigate(["/manager"])
-    //   }
-
-    // })
-    // .catch((err)=>this.errorMessage.set("Error updating the password: "+err))
+    
     
   }
 }

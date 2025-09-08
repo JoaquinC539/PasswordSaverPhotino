@@ -21,7 +21,6 @@ public class MasterPasswordController : IController
     {
 
         string password = req.Payload!.Value.GetString()!;
-
         bool? inserted = await masterPasswordService.InsertMasterPasswordAsync(password);
         return inserted;
     }
