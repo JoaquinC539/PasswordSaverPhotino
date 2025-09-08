@@ -6,7 +6,7 @@ namespace services;
 
 public class MasterPasswordService
 {
-    private static MasterPasswordService instance = null;
+    private static MasterPasswordService? instance = null;
     private DB dB = DB.GetDB();
 
     private string encryptionKey = "";
@@ -57,11 +57,11 @@ public class MasterPasswordService
         return encryptionKey;
     }
 
-    public async Task<bool?> InsertMasterPasswordAsync(string password)
+    public Task<bool?> InsertMasterPasswordAsync(string password)
     {
         try
         {
-            byte[] saltBytes = RandomNumberGenerator.GetBytes(64);
+            byte[] saltBytes = RandomNumberGenerator.GetBytes(32);
             string keySalt = Convert.ToBase64String(saltBytes);
 
             string hashPassword = BCrypt.Net.BCrypt.HashPassword(password, workFactor: 10);
@@ -70,11 +70,11 @@ public class MasterPasswordService
 
             encryptionKey = GenerateEncryptKey(password, keySalt);
 
-            return inserted;
+            return Task.FromResult((bool?)inserted);
         }
-        catch (System.Exception)
+        catch (System.Exception ex)
         {
-
+            Console.Error.WriteLine("Error inserting master password: " + ex.Message);
             return null;
         }
     }
@@ -102,5 +102,6 @@ public class MasterPasswordService
             return null;
         }
     }
+    
 
 }

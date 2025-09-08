@@ -4,37 +4,25 @@ export interface LoginMaster{
   }
 
   export interface Password{
-    id:number;
-    name:string;
-    username:string;
-    password:string;
-    notes:string;
-    created_at:Date;
+    Id:number;
+    Name:string;
+    Username:string;
+    PasswordValue:string;
+    Notes:string;
+    CreatedAt:Date;
   }
-  export interface Password{
-    id:number;
-    name:string;
-    username:string;
-    password:string;
-    notes:string;
-    created_at:Date;
-  }
-  export interface PasswordShow{
-    id:number;
-    name:string;
-    username:string;
-    password:string;
-    notes:string;
-    created_at:Date;
+
+  export interface PasswordShow extends Password{
+   
     show:boolean;
   }
   export interface PasswordDTO{
     name:string;
     username:string;
-    password:string;
+    passwordValue:string;
     notes?:string;
   }
-export interface UpdatePayload{
+export interface UpdatePayload extends PasswordDTO{
   id:number;
-  password:PasswordDTO;
+  
 }

@@ -25,29 +25,24 @@ export class EditPasswordComponent  implements OnInit{
 
   constructor(private passwordService:PasswordService,private router:Router,private route:ActivatedRoute){}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.loading.set(true)
     const id=this.route.snapshot.paramMap.get("id")
     this.passwordId.set(Number(id))
     if(id){
-      this.passwordService.getPassword(Number(id))
-      // .then((data)=>{
-      //   this.loading.set(false);
-      //   if(data.data?.length>0){
-      //     const password=(data.data[0]) as Password;
-      //     this.editPasswordForm.patchValue({
-      //       name:password.name,
-      //       username:password.username,
-      //       password:password.password,
-      //       notes:password.notes
-      //     })
-      //   }
-        
-      // })
-      // .catch((error)=>{
-      //   this.loading.set(false);
-      //   this.errorMessage.set("Error getting password: "+ error)
-      // });
+      try {
+        const password =await this.passwordService.getPassword(Number(id)) as Password;      
+        this.editPasswordForm.patchValue({
+          name:password.Name,
+          username:password.Username,
+          password:password.PasswordValue,
+          notes:password.Notes
+        })
+      } catch (error) {
+        this.errorMessage.set("Error getting password: "+ error)
+      }      
+      this.loading.set(false);
+      
     }
     
    
@@ -56,7 +51,7 @@ export class EditPasswordComponent  implements OnInit{
   togglePassword(){
     this.passworldField.update((val:string)=>val==="password"?"text":"password")
   }
-  onSubmit(event:SubmitEvent){
+  async onSubmit(event:SubmitEvent){
     event.preventDefault();
     this.errorMessage.set("");
     const formValue=this.editPasswordForm.value;
@@ -68,15 +63,27 @@ export class EditPasswordComponent  implements OnInit{
     const password:PasswordDTO={
       name: formValue.name || "",
       username: formValue.username||'',
-      password:  formValue.password||'',
+      passwordValue:  formValue.password||'',
       notes:formValue.notes ?? ""
     }
     const payload:UpdatePayload={
       id: this.passwordId(),
-      password: password
+      ...password
     }
     this.editPasswordForm.reset();
-    this.passwordService.updatePassword(payload)
+
+    try {
+      const updated = await this.passwordService.updatePassword(payload);
+      if(updated){
+        this.router.navigate(["/manager"])
+      }else{
+        this.errorMessage.set("Error adding password reboot the app");
+      }
+    } catch (error) {
+      this.errorMessage.set("Error updating the password: "+error);
+    }
+    
+    
     // .then((res)=>{
     //   if(res.error){
     //     this.errorMessage.set("Error adding password reboot the app");

@@ -26,7 +26,7 @@ export class AppComponent implements OnInit{
   }
 
   async ngOnInit(): Promise<void> {  
-    // this.callGreet();
+    this.callGreet();
    
     const count = await this.passwordService.getMasterCount()
     if(!count){

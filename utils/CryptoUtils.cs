@@ -9,7 +9,7 @@ public static class CryptoUtils
     public static string Encrypt(string plainText, string base64Key)
     {
         byte[] key = Convert.FromBase64String(base64Key);
-        byte[] iv = RandomNumberGenerator.GetBytes(16);
+        byte[] iv = RandomNumberGenerator.GetBytes(12);
         byte[] plaintextBytes = Encoding.UTF8.GetBytes(plainText);
         byte[] ciphertext = new byte[plaintextBytes.Length];
         byte[] tag = new byte[16]; // GCM tag is always 16 bytes

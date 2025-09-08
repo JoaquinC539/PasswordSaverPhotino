@@ -19,20 +19,20 @@ export class PasswordManagerComponent implements OnInit {
 
 
   constructor(private passwordService:PasswordService){}
-  getPasswords(){
+  async getPasswords(){
     this.loading.set(true)
-    this.passwordService.getPasswords()
-      // .then((data)=>{
-      //   if(data.error){
-      //     this.errorMessage.set("Error in getting passwords, restart the app")
-      //     this.loading.set(false);
-      //     return;
-      //   }
-      //   const dataWithShow=(data.data as Password[]).map((password)=>({...password,show:false}))
-      //   this.passwords.set(dataWithShow);
-      //   this.loading.set(false);
-      // })
-      // .catch((error)=>this.errorMessage.set("Error getting passwords: "+error))
+    const passwords = await this.passwordService.getPasswords()
+
+    
+    
+    if(!passwords){
+      this.errorMessage.set("Error in getting passwords, restart the app")
+       return;
+    }
+    const dataWithShow=(passwords as Password[]).map((password)=>({...password,show:false}))
+      this.passwords.set(dataWithShow);
+      this.loading.set(false);
+      
   }
   ngOnInit(): void {
       window.resizeTo(1450,600)

@@ -24,13 +24,19 @@ class MessageRouter
         var greet = new GreetController();
         var notFound = new NotFoundController();
         var masterPassword = new MasterPasswordController();
+        var password = new PasswordController();
         routes = new Dictionary<string, Func<Request, Task<object?>>>
         {
             ["greet"] = req => greet.HandleAsyncTask(req),
             ["notFound"] = req => notFound.HandleAsyncTask(req),
             ["count"] = req => masterPassword.HandleAsyncTask(req),
             ["setMaster"] = req => masterPassword.SetMasterPassword(req),
-            ["login"] = req => masterPassword.Login(req)
+            ["login"] = req => masterPassword.Login(req),
+            ["getPasswords"] = req => password.HandleAsyncTask(req),
+            ["addPassword"] = req => password.InsertPassword(req),
+            ["getPassword"] = req => password.GetPassword(req),
+            ["updatePassword"] = req => password.UpdatePassword(req),
+            ["deletePassword"] = req => password.DeletePassword(req)
         };
     }
     private void SetWindow(PhotinoWindow window)
@@ -71,6 +77,10 @@ class MessageRouter
         {
             var handler = routes.ContainsKey(req.Type) ? routes[req.Type] : routes["notFound"];
             var result = await handler(req);
+            if (result == null)
+            {
+                SendError(req.Id, req.Type, "Error handling the request");
+            }
             var resp = new ViewResponse
             {
                 Id = req.Id,

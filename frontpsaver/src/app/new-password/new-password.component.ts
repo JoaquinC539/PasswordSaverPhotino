@@ -27,7 +27,7 @@ export class NewPasswordComponent {
   togglePassword(){
     this.passworldField.update((val:string)=>val==="password"?"text":"password")
   }
-  onSubmit(event:SubmitEvent){
+  async onSubmit(event:SubmitEvent){
     event.preventDefault();
     this.loading.set(true);
     this.errorMessage.set("");
@@ -40,11 +40,21 @@ export class NewPasswordComponent {
     const password:PasswordDTO={
       name: formValue.name || "",
       username: formValue.username||'',
-      password:  formValue.password||'',
+      passwordValue:  formValue.password||'',
       notes:formValue.notes ?? ""
     }
     this.newPasswordForm.reset();
-    this.passwordService.addPassword(password)
+    try {
+      const res = await this.passwordService.addPassword(password)
+    this.loading.set(false);
+    this.router.navigate(["/manager"])
+    } catch (error) {
+      this.loading.set(false);
+      console.error(error);
+      this.errorMessage.set(error as string);
+    }
+    
+    
     // .then((res)=>{
     //   if(res.error){
     //     this.loading.set(false);
