@@ -1,5 +1,6 @@
 
 
+using System.Drawing;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using classes;
@@ -76,6 +77,10 @@ class MessageRouter
         try
         {
             var handler = routes.ContainsKey(req.Type) ? routes[req.Type] : routes["notFound"];
+            if (req.Type == "getPasswords")
+            {
+                window.SetSize(new Size(1280, 800));
+            }
             var result = await handler(req);
             if (result == null)
             {

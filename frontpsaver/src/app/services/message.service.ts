@@ -15,7 +15,7 @@ export class MessageService {
           
       try {
         parsedRes=JSON.parse(msg) as IResponse;
-        console.log("Status ress",parsedRes)
+        // console.log("Status ress",parsedRes)
       } catch (error) {
         console.error("Failed to parse message from .NET:", msg, error);
         return;
@@ -37,7 +37,7 @@ export class MessageService {
   public send<T=any>(type:string,payload?:any):Promise<T>{
     const id = ++this.requestId;
     const req = new Request(id,type,payload);
-    console.log("Send: ",req);
+    // console.log("Send: ",req);
     window.external.sendMessage(JSON.stringify(req));
     return new Promise<T>((resolve,reject)=>{
       const entry :PendingEntry = {resolve,reject}
