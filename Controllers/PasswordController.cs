@@ -19,12 +19,8 @@ public class PasswordController : IController
     }
     public async Task<object?> InsertPassword(Request req)
     {
-
-
-        
         var passwordDto = JsonSerializer.Deserialize<PasswordDto>(req.Payload.Value.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         var inserted = await passwordService.AddPasswordAsync(passwordDto);
-
         return inserted;
     }
     public async Task<object?> GetPassword(Request req)

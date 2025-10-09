@@ -54,17 +54,7 @@ export class NewPasswordComponent {
       this.errorMessage.set(error as string);
     }
     
-    
-    // .then((res)=>{
-    //   if(res.error){
-    //     this.loading.set(false);
-    //     this.errorMessage.set("Error adding password reboot the app");
-    //   }else{
-    //     this.loading.set(false);
-    //     this.router.navigate(["/manager"])
-    //   }
-      
-    // })
+   
     
   }
 }

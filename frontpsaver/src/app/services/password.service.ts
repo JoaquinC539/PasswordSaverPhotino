@@ -39,4 +39,7 @@ export class PasswordService {
     
     return this.messageService.send("deletePassword",id);
   }
+  public logout(){
+    return this.messageService.send("logout");
+  }
 }

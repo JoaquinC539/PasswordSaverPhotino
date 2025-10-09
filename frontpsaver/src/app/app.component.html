@@ -1,3 +1,20 @@
 <!-- <h1>Hello world</h1> -->
  <!-- <button (click)="callGreet()">Greet</button> -->
-<router-outlet />
+<section>
+    <div class="row col-12">
+        <div class="container-fluid d-flex justify-content-end mt-3" style="width: 80%;">
+            @if (loginState.IsLogged) {
+                <a (click)="handleLogout()">Logout</a> 
+            }   
+            
+        </div>
+        
+    </div>
+</section>
+<section>
+    <div class="row col-12">
+        <router-outlet />
+    </div>
+
+</section>
+

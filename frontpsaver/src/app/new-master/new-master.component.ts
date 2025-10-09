@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { PasswordService } from '../services/password.service';
 import { Router } from '@angular/router';
 import { ScreenLoaderComponent } from '../screen-loader/screen-loader.component';
+import { LoginStateService } from '../services/loginState.service';
 @Component({
   selector: 'app-new-master',
   imports: [ReactiveFormsModule,ScreenLoaderComponent],
@@ -18,7 +19,7 @@ export class NewMasterComponent {
     retypedPassWord:new FormControl("",[Validators.required,Validators.pattern(/^[a-zA-Z0-9#$%]+$/)])
   })
 
-  constructor(private passwordService:PasswordService,private router:Router){}
+  constructor(private passwordService:PasswordService,private router:Router,private loginState:LoginStateService){}
 
   async onSubmit(event:SubmitEvent):Promise<void>{
     this.loading.set(true)
@@ -43,6 +44,7 @@ export class NewMasterComponent {
           this.successMessage="Master password added sucessfully. \n Keep very safe this password since it is not recoverable and if it is loss the data wont be recoverable. \n This password will be asked everytime the program is opened \n Redirecting to password manager in 10 seconds";          
           this.newPasswordForm.setValue({newPassword:"",retypedPassWord:""});
           setTimeout(()=>{
+            this.loginState.login();
             this.router.navigate(["/manager"]);
           },10000)
       }else{

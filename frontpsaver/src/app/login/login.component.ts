@@ -4,6 +4,7 @@ import { PasswordService } from '../services/password.service';
 import { LoginMaster } from '../interfaces/data';
 import { Router } from '@angular/router';
 import { ScreenLoaderComponent } from '../screen-loader/screen-loader.component';
+import { LoginStateService } from '../services/loginState.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginComponent {
     password:new FormControl<string>("",[Validators.required]),
     
   })
-  constructor(private passwordService:PasswordService,private router:Router){}
+  constructor(private passwordService:PasswordService,private router:Router,private loginState:LoginStateService){}
 
   async onSubmit(event:SubmitEvent){
     event.preventDefault();
@@ -35,6 +36,7 @@ export class LoginComponent {
           this.errorMessage.set("Incorrect password");
           return;
         }
+        this.loginState.login();
         this.router.navigate(["/manager"])
       } catch (error) {
         this.errorMessage.set("An error looking for the password happened, reset the program");

@@ -18,8 +18,8 @@ namespace PhotinoApp
             db.CreateOrCheckTables();
             MessageRouter messageRouter = new MessageRouter();
             string windowTitle = "Password Saver";
-            string pageUrl = "wwwroot/ui/browser/index.html";
-            // var pageUrl = new Uri("http://localhost:4200");
+            // string pageUrl = "wwwroot/ui/browser/index.html";
+            var pageUrl = new Uri("http://localhost:4200");
 
             // Creating a new PhotinoWindow instance with the fluent API
             var window = new PhotinoWindow()

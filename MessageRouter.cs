@@ -33,6 +33,7 @@ class MessageRouter
             ["count"] = req => masterPassword.HandleAsyncTask(req),
             ["setMaster"] = req => masterPassword.SetMasterPassword(req),
             ["login"] = req => masterPassword.Login(req),
+            ["logout"] = req=>masterPassword.Logout(req),
             ["getPasswords"] = req => password.HandleAsyncTask(req),
             ["addPassword"] = req => password.InsertPassword(req),
             ["getPassword"] = req => password.GetPassword(req),

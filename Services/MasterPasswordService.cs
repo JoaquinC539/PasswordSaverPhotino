@@ -102,6 +102,10 @@ public class MasterPasswordService
             return null;
         }
     }
-    
+
+    public void MakeLogoutAsync()
+    {
+        encryptionKey = "";
+    }
 
 }

@@ -30,4 +30,9 @@ public class MasterPasswordController : IController
         bool? same = await masterPasswordService.MakeLoginComparisonAsync(password);
         return same;
     }
+
+    public async Task<object?> Logout(Request req)
+    {
+        return true;
+    }
 }
