@@ -33,6 +33,7 @@ public class MasterPasswordController : IController
 
     public async Task<object?> Logout(Request req)
     {
+        masterPasswordService.MakeLogoutAsync();
         return true;
     }
 }

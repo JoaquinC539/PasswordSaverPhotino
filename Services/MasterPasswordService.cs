@@ -96,9 +96,9 @@ public class MasterPasswordService
             }
             return samePassword;
         }
-        catch (System.Exception)
+        catch (System.Exception e)
         {
-
+            Console.WriteLine("Error ocurred: " + e.Message);
             return null;
         }
     }

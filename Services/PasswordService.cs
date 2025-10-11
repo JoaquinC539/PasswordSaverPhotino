@@ -30,10 +30,7 @@ public class PasswordService
 
     public string SetAndGetEncryptKey()
     {
-        if (!string.IsNullOrEmpty(EncryptKey))
-        {
-            return EncryptKey;
-        }
+       
         EncryptKey = masterPasswordService.GetEncryptKey();
         return EncryptKey;
     }
@@ -43,7 +40,7 @@ public class PasswordService
         const string sqlScript = "SELECT * FROM passwords;";
         try
         {
-            string key = SetAndGetEncryptKey();
+            
             var rows = await dB.ExecQueryReturnAsync(sqlScript);
             if (rows == null) return null;
             var passwords = GeneratePasswordsFromQuery(rows);
@@ -52,13 +49,13 @@ public class PasswordService
         }
         catch (System.Exception ex)
         {
-
             Console.Error.WriteLine($"An error occurred getting passwords: {ex.Message}");
             return null;
         }
     }
     public List<Password> GeneratePasswordsFromQuery(List<Dictionary<string, object>> rows)
     {
+        SetAndGetEncryptKey();
         var result = new List<Password>();
         foreach (var row in rows)
         {

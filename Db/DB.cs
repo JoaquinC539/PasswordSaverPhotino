@@ -59,6 +59,16 @@ public class DB
         connection.Open();
 
     }
+    public void ReStartDB()
+    {
+        connection.Close();
+        DbPath=GetConfigJson();       
+        CheckOrCreateDB();
+        CreateOrCheckTables();
+        using var sha = System.Security.Cryptography.SHA256.Create();
+        
+
+    }
     public SqliteConnection GetConnection() => connection;
 
     public void CreateOrCheckTables()

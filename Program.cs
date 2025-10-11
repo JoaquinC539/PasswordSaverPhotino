@@ -1,7 +1,9 @@
 ﻿
 using database;
+using Microsoft.Extensions.Logging;
 using Photino.NET;
 using System.Drawing;
+using utils;
 
 namespace PhotinoApp
 {
@@ -11,15 +13,16 @@ namespace PhotinoApp
     {
         [STAThread]
         static void Main(string[] args)
-        {
+        {            
+            
             // Window title declared here for visibility
             DB db = DB.GetDB();
             db.CheckOrCreateDB();
             db.CreateOrCheckTables();
             MessageRouter messageRouter = new MessageRouter();
             string windowTitle = "Password Saver";
-            // string pageUrl = "wwwroot/ui/browser/index.html";
-            var pageUrl = new Uri("http://localhost:4200");
+            string pageUrl = "wwwroot/ui/browser/index.html";
+            // var pageUrl = new Uri("http://localhost:4200");
 
             // Creating a new PhotinoWindow instance with the fluent API
             var window = new PhotinoWindow()
