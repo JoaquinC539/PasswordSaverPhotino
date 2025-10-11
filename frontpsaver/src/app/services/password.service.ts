@@ -42,4 +42,7 @@ export class PasswordService {
   public logout(){
     return this.messageService.send("logout");
   }
+  public changeDB(filePath:string){
+    return this.messageService.send("dbLocation",filePath);    
+  }
 }

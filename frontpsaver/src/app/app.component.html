@@ -8,7 +8,17 @@
             }   
             
         </div>
-        
+    </div>
+</section>
+<section>
+    <div class="row col-12">
+        <div class="container-fluid d-flex justify-content-center mt-3" style="width: 100%;">
+            @if (loginState.IsToCloseStandard) {
+                <div class="alert alert-warning">
+                    For secuirity reasons the session will be closed in 1 minute.
+                </div> 
+            }
+        </div>
     </div>
 </section>
 <section>

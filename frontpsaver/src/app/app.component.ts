@@ -14,13 +14,7 @@ import { LoginStateService } from './services/loginState.service';
 export class AppComponent implements OnInit{
   title = 'frontpsaver';
   constructor(private helloService:HelloService,private passwordService:PasswordService,private router:Router,public loginState:LoginStateService){
-    effect(()=>{
-      if(loginState.IsLogged){        
-        setTimeout(()=>{
-          this.handleLogout();
-        },1000*60*10)
-      }
-    })
+   
   }
   
   callGreet(){    
@@ -42,6 +36,5 @@ export class AppComponent implements OnInit{
     }else{
       this.router.navigate(["/login"])
     }
-    
   }
 }

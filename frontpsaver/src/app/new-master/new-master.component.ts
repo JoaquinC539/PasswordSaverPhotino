@@ -1,12 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms"
 import { PasswordService } from '../services/password.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ScreenLoaderComponent } from '../screen-loader/screen-loader.component';
 import { LoginStateService } from '../services/loginState.service';
 @Component({
   selector: 'app-new-master',
-  imports: [ReactiveFormsModule,ScreenLoaderComponent],
+  imports: [ReactiveFormsModule,ScreenLoaderComponent,RouterLink],
   templateUrl: './new-master.component.html',
   styleUrl: './new-master.component.scss'
 })

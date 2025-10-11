@@ -37,6 +37,13 @@
             <p>This password will be asked every time. Keep it safe since it is not recoverable</p>
         </div>
     </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <p>If you already have a DB click <a [routerLink]="['/config']" [queryParams]="{from:'login'}">here</a> to go into configuration(Only ones created by this application)</p>
+            </div>
+        </div>
+    </div>
 
 </div>
 <app-screen-loader [loading]="loading()"></app-screen-loader>
