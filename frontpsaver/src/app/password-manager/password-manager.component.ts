@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { Password, PasswordShow } from '../interfaces/data';
 import dayjs from "dayjs";
 import { ScreenLoaderComponent } from '../screen-loader/screen-loader.component';
+import {Tooltip} from 'bootstrap';
 
 @Component({
   selector: 'app-password-manager',
@@ -15,28 +16,29 @@ export class PasswordManagerComponent implements OnInit {
   loading=signal<boolean>(false);
   errorMessage:WritableSignal<string>=signal<string>("");
   passwords:WritableSignal<PasswordShow[]>=signal<PasswordShow[]>([])
+  passwordsArray:PasswordShow[]=[];
   passwordToDelete=signal<number>(0);
-
-
+  siteNameFilter=signal<string>("");
+  private searchTimeout:any;
   constructor(private passwordService:PasswordService){}
   async getPasswords(){
     this.loading.set(true)
     const passwords = await this.passwordService.getPasswords()
-
-    
-    
     if(!passwords){
       this.errorMessage.set("Error in getting passwords, restart the app")
        return;
     }
-    const dataWithShow=(passwords as Password[]).map((password)=>({...password,show:false}))
+    const dataWithShow=(passwords as Password[]).map((password)=>({...password,show:false,coppied:false}))
       this.passwords.set(dataWithShow);
+      this.passwordsArray=(dataWithShow);
       this.loading.set(false);
       
   }
   ngOnInit(): void {
       window.resizeTo(1450,600)
       this.getPasswords();
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new Tooltip(tooltipTriggerEl))
   }
   dateParse(date:string|Date){
     return dayjs(date).format("DD/MM/YYYY")
@@ -54,4 +56,34 @@ export class PasswordManagerComponent implements OnInit {
     
   }
 
+  filterPasswordOnSearch(e:any){ 
+    const search=e.target.value.trim().toLowerCase();
+    clearTimeout(this.searchTimeout);
+    this.searchTimeout=setTimeout(()=>{
+      const passwordsFiltered=this.passwordsArray
+      .filter((p)=>{
+        const passwordCleaned=p.Name?.trim()?.toLowerCase();
+        return passwordCleaned.includes(search)
+      })
+      this.passwords.set(passwordsFiltered)
+    },150)
+    
+  }
+  copyToClipboard(password:PasswordShow){
+    navigator.clipboard.writeText(password.PasswordValue).then(()=>{
+      this.passwords.update(passwords=>{
+        const passwordFind=passwords.find(p=>p.Id===password.Id)
+        if(passwordFind){
+          passwordFind.coppied=true;
+        }
+        setTimeout(()=>{
+        if(passwordFind){
+          passwordFind.coppied=false;
+          }
+        },1150)
+        return passwords;
+      })
+      
+    });
+  }
 }

@@ -15,6 +15,7 @@ export interface LoginMaster{
   export interface PasswordShow extends Password{
    
     show:boolean;
+    coppied:boolean;
   }
   export interface PasswordDTO{
     name:string;
