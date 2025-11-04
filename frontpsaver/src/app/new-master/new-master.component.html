@@ -1,7 +1,7 @@
-<div class="container-fluid d-flex justify-content-center align-items-center p-2 flex-column" [style]="{minHeight:'300px'}">
-    <div class="row">
+<div class="container-fluid d-flex justify-content-center align-items-center flex-column" [style]="{minHeight:'300px',padding:'0'}">
+    <div class="row" style="width: 100%;">
         <div class="col-12">
-            <div class=" card">
+            <div class=" card" style="width: 100%;">
                 <div class="card-body">
                     <form [formGroup]="newPasswordForm" (submit)="onSubmit($event)">
                         <div class="mb-3">
