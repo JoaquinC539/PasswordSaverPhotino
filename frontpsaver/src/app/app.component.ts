@@ -17,24 +17,18 @@ export class AppComponent implements OnInit{
    
   }
   
-  callGreet(){    
-    this.helloService.greet()
-    .then((res)=>{
-      console.log("Response got in component: ",res);
-    })
-    
-  }
+  
   handleLogout(){
     this.loginState.logout()
   }
 
   async ngOnInit(): Promise<void> {  
     // this.callGreet();   
-    const count = await this.passwordService.getMasterCount()
-    if(!count){
+    // const count = await this.passwordService.getMasterCount()
+    // if(!count){
       this.router.navigate(["/new"])
-    }else{
-      this.router.navigate(["/login"])
+    // }else{
+    //   this.router.navigate(["/login"])
     }
-  }
+  
 }

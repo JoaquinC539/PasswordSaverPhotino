@@ -1,10 +1,9 @@
-using System.Text.Json;
-using classes;
 
-namespace controllers;
+using PasswordSaver.Models;
 
+namespace PasswordSaver.Controllers;
 
-class GreetController : IController
+class GreetController 
 {
     public GreetController() { }
 
