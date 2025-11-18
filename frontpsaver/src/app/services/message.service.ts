@@ -28,11 +28,14 @@ export class MessageService {
       this.http.post(apiUrl.passwordsUrl, req).subscribe({
         next: (response) => this.handleResponse(response, id),
         error: (err) => {
-          if (this.pending.has(id)) {
-            const entry = this.pending.get(id)!;
-            this.pending.delete(id)
-            clearTimeout(entry.timeoutId);
-          }
+          console.log("Error",err.error.Error);
+          const stringError=err.error.Error
+          const entry = this.pending.get(id)!;
+          this.pending.delete(id)
+          clearTimeout(entry.timeoutId);
+          entry.reject(stringError);
+          console.log("en error esto se ejecuto en mmesage service");
+          
 
           throw new Error("An error ocurred at rquest", err)
         }
@@ -79,10 +82,6 @@ export class MessageService {
       this.pending.delete(trackedId);
       throw new Error("An error ocurred at handling response: " + error);
     }
-
-  }
-
-  private dispatchResponse(id:number,trackedId:number,resolve:boolean,response:IResponse){
 
   }
 

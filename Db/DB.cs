@@ -27,18 +27,18 @@ public class DB
     private string GetConfigFile()
     {
 #if ANDROID || IOS
-        string configFile = Path.Combine(FileSystem.AppDataDirectory,"psaverConfig.json");
+        string configFile = Path.Combine(FileSystem.AppDataDirectory, "psaverConfig.json");
 #else
         string configFile = Path.Combine(AppContext.BaseDirectory, "psaverConfig.json");
 #endif
         return configFile;
 
     }
-    
+
     private string GetDefaultDbPath()
     {
-        #if ANDROID || IOS
-        string defaultDBPath = Path.Combine(FileSystem.AppDataDirectory,"data.db");
+#if ANDROID || IOS
+        string defaultDBPath = Path.Combine(FileSystem.AppDataDirectory, "data.db");
 #else
         string defaultDBPath = Path.Combine(AppContext.BaseDirectory, "data.db");
 #endif
@@ -48,30 +48,39 @@ public class DB
 
     private string GetConfigJson()
     {
+        try
+        {
+            string configFile = GetConfigFile();
+            if (!File.Exists(configFile))
+            {
+                string defaultDBPath = GetDefaultDbPath();
+                var config = new { dbPath = defaultDBPath };
+                var json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(configFile, json);
+                Console.WriteLine("Config JSON created at: " + configFile);
+                Console.WriteLine("Created this dbpath: " + defaultDBPath);
+                return defaultDBPath;
+            }
+            else
+            {
+                string json = File.ReadAllText(configFile);
+                using var doc = JsonDocument.Parse(json);
+                string path = doc.RootElement.GetProperty("dbPath").GetString()!;
+                Console.WriteLine("Using this path to DB" + path);
+                return path;
+            }
+        }
+        catch (System.Exception e)
+        {
 
-        string configFile = GetConfigFile();
-        if (!File.Exists(configFile))
-        {
-            string defaultDBPath = GetDefaultDbPath();
-            var config = new { dbPath = defaultDBPath };
-            var json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(configFile, json);
-            Console.WriteLine("Config JSON created at: " + configFile);
-            Console.WriteLine("Created this dbpath: " +defaultDBPath);
-            return defaultDBPath;
+            throw new Exception($"An exception ocurred at setting configs {e.Message}");
         }
-        else
-        {
-            string json = File.ReadAllText(configFile);
-            using var doc = JsonDocument.Parse(json);
-            string path = doc.RootElement.GetProperty("dbPath").GetString()!;
-            Console.WriteLine("Using this path to DB"+path);
-            return path;
-        }
+
 
     }
     public void CheckOrCreateDB()
     {
+
         if (!File.Exists(DbPath))
         {
             File.Create(DbPath).Close();
@@ -92,27 +101,35 @@ public class DB
         }
         catch (System.Exception e)
         {
-            
-            Console.WriteLine("There was an exception at opening sqlite connection: "+e.Message);
+
+            throw new Exception("There was an exception at opening sqlite connection: " + e.Message);
         }
-        
-        
 
     }
     public void ReStartDB()
     {
-        connection.Close();
-        DbPath = GetConfigJson();
-        CheckOrCreateDB();
-        CreateOrCheckTables();
-        using var sha = System.Security.Cryptography.SHA256.Create();
+        try
+        {
+            connection.Close();
+            DbPath = GetConfigJson();
+            CheckOrCreateDB();
+            CreateOrCheckTables();
+            // using var sha = System.Security.Cryptography.SHA256.Create();
+        }
+        catch (System.Exception e)
+        {
+
+            throw new Exception("Exception at restarting DB: " + e.Message);
+        }
+
 
 
     }
-    private SqliteConnection GetConnection() => connection!;
+    
 
     public void CreateOrCheckTables()
     {
+
         string masterTableSql = @"
         CREATE TABLE IF NOT EXISTS mainPassword(
                id INTEGER PRIMARY KEY CHECK (id=1),
@@ -131,15 +148,24 @@ public class DB
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
     ";
-        using var cmd1 = connection.CreateCommand();
-        cmd1.CommandText = masterTableSql;
-        cmd1.ExecuteNonQuery();
+        try
+        {
+            using var cmd1 = connection.CreateCommand();
+            cmd1.CommandText = masterTableSql;
+            cmd1.ExecuteNonQuery();
 
 
-        using var cmd2 = connection.CreateCommand();
-        cmd2.CommandText = passwordsTableSql;
-        cmd2.ExecuteNonQuery();
-        Console.WriteLine("Tables created or checked successfully");
+            using var cmd2 = connection.CreateCommand();
+            cmd2.CommandText = passwordsTableSql;
+            cmd2.ExecuteNonQuery();
+            Console.WriteLine("Tables created or checked successfully");
+        }
+        catch (System.Exception e)
+        {
+
+            throw new Exception($"An exception ocurred " );
+        }
+
     }
     public bool ExecQuery(string sql)
     {
@@ -156,8 +182,7 @@ public class DB
         }
         catch (System.Exception err)
         {
-            Console.WriteLine($"Error ocurred exeuting query: {err.Message}");
-            return false;
+            throw new Exception($"Error ocurred exeuting query: {err.Message}");
         }
     }
 
@@ -184,8 +209,7 @@ public class DB
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine("Error at running SQL: " + ex.Message);
-            return null;
+            throw new Exception("Error at running fetch SQL: " + ex.Message);
 
         }
     }
@@ -211,8 +235,7 @@ public class DB
         catch (System.Exception ex)
         {
 
-            Console.Error.WriteLine("Error occurred doing query: " + ex.Message);
-            return false;
+            throw new Exception("Error occurred doing prep query: " + ex.Message);
         }
     }
     public async Task<List<Dictionary<string, object>>?> PreparedQueryReturnAsync(string sql, params object[] values)
@@ -243,10 +266,9 @@ public class DB
         }
         catch (System.Exception ex)
         {
-            Console.Error.WriteLine("Error occurred doing query: " + ex.Message);
-            return null;
+            throw new Exception("Error occurred doinga prep fetch query: " + ex.Message);
         }
     }
 
-    
+
 }

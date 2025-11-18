@@ -47,7 +47,7 @@ public class ConfigService
         }
         catch (Exception e)
         {
-            throw new Exception("Error ocurred changing the db: "+e.Message);
+            throw new Exception("Error ocurred changing the databse (the database was not updated): "+e.Message);
             // logger.LogError("Error ocurred: {e}", e.Message);
             return false;
         }
