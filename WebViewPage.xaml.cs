@@ -27,9 +27,9 @@ public partial class WebViewPage :ContentPage
         {
             localWebServer.StartServer();
             Console.WriteLine("Starting app in: " + localWebServer.BaseUrl);
-            // WebViewElement.Source = new UrlWebViewSource { Url = localWebServer.BaseUrl };
+            WebViewElement.Source = new UrlWebViewSource { Url = localWebServer.BaseUrl };
             // DEV set your IP url or localhost
-            WebViewElement.Source = new UrlWebViewSource { Url = $"http://localhost:4200/?cachebuster={DateTime.Now.Ticks}" };        
+            // WebViewElement.Source = new UrlWebViewSource { Url = $"http://localhost:4200/?cachebuster={DateTime.Now.Ticks}" };        
 
         }
         catch (System.Exception e)

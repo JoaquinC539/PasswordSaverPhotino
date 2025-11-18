@@ -27,7 +27,7 @@ public class LocalWebServer
     {
         UiFolderName = "browser";
         // DEV Coment port to set fixed port 7614
-        // port = GetFreePort();
+        port = GetFreePort();
         rootpath = GetStaticUiRootPath(UiFolderName);
         webServer = CreateWebServer(HostUrl, rootpath);
         Console.WriteLine($"Using this host: {HostUrl}");
