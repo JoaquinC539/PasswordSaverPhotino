@@ -16,14 +16,29 @@ export class AppComponent implements OnInit{
   constructor(private helloService:HelloService,private passwordService:PasswordService,private router:Router,public loginState:LoginStateService){
    
   }
-  
+
+
+  async getStatus(){
+    const res= await this.helloService.getStatus();
+    console.log(res);
+  }
+  async makePost(){
+    const res = await this.helloService.makePost();
+    console.log(res)
+  }
   
   handleLogout(){
     this.loginState.logout()
   }
 
+  async callGreet(){
+    const res = await this.helloService.greet();
+    console.log(res);
+  } 
   async ngOnInit(): Promise<void> {  
-    // this.callGreet();   
+    this.getStatus();
+    this.makePost();
+    this.callGreet()
     // const count = await this.passwordService.getMasterCount()
     // if(!count){
       this.router.navigate(["/new"])

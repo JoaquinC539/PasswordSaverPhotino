@@ -6,5 +6,5 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { LocationStrategy } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes) ]
+  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideHttpClient(withFetch()) ]
 };

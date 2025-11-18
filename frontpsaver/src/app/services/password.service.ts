@@ -6,7 +6,7 @@ import { MessageService } from './message.service';
   providedIn: 'root'
 })
 export class PasswordService {
-  isElectron:boolean=!!(window && window.electronAPI);
+  
   constructor(private messageService:MessageService) { }
   public getMasterCount(){
    

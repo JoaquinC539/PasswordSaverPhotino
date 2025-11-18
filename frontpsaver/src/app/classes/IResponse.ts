@@ -15,5 +15,5 @@ export interface IResponse {
 export  type PendingEntry = {
   resolve: (v: any) => void;
   reject: (err: any) => void;
-  timeoutId?: number;
+  timeoutId: any;
 };
