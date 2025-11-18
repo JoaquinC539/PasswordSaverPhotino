@@ -24,7 +24,7 @@ public class OmniPasswordController
         var notFound = new NotFoundController();
         var masterPassword = new MasterPasswordController();
         var password = new PasswordController();
-
+        var config = new ConfigController();
         routes = new Dictionary<string, Func<Request, Task<object?>>>
         {
             ["greet"] = req => greet.HandleAsyncTask(req),
@@ -38,6 +38,7 @@ public class OmniPasswordController
             ["getPassword"] = req => password.GetPassword(req),
             ["updatePassword"] = req => password.UpdatePassword(req),
             ["deletePassword"] = req => password.DeletePassword(req),
+            ["dbLocation"] = req=>config.HandleAsyncTask(req)
         };
 
     }

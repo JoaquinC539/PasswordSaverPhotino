@@ -5,3 +5,4 @@ browser
 *.sln
 browser
 Platforms/Android/Assets/browser
+*.db
