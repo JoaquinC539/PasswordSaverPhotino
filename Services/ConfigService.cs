@@ -30,7 +30,7 @@ public class ConfigService
         {
             string configFile = GetConfigFile();
             // logger.LogInformation("ConfigFilePath: {path}", configFile);
-            if (!FilePath.EndsWith(".db"))
+            if ( !File.Exists(FilePath) || !FilePath.EndsWith(".db"))
             {
                 return false;
             }
