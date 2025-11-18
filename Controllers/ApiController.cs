@@ -46,7 +46,7 @@ public class ApiController : WebApiController
     }
 
     [Route(HttpVerbs.Post,"/passwords")]
-    public async Task<object> HandlePasswordRoute()
+    public async Task<Response> HandlePasswordRoute()
     {
         try
         {

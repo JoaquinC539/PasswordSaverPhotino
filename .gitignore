@@ -6,4 +6,4 @@ browser
 browser
 Platforms/Android/Assets/browser
 *.db
-
+*.csproj.user

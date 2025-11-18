@@ -35,6 +35,11 @@ export class EditDBComponent implements OnInit{
       this.loading.set(true);
       await this.passwordService.logout();
       const res = await this.passwordService.changeDB(filePath);
+      if(!res){
+        this.errorMessage.set("File not existant or not valid, the database wasn't updated");
+        this.loading.set(false);
+        return;
+      }
       const count = await this.passwordService.getMasterCount()
     if(!count){
       this.router.navigate(["/new"])
