@@ -72,13 +72,15 @@ public class OmniPasswordController
             {
                 throw new NullDataException($"Handler returned a null for type {req.Type}");
             }
-            return new Response
+            Response res =  new Response
             {
                 Id = req.Id,
                 Type = req.Type,
                 Payload = result,
                 Success = true
             };
+            Console.WriteLine("Sending: "+JsonSerializer.Serialize(res));
+            return res;
         }
         catch (System.Exception e)
         {
