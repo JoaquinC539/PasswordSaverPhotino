@@ -36,14 +36,15 @@ export class AppComponent implements OnInit{
     console.log(res);
   } 
   async ngOnInit(): Promise<void> {  
-    this.getStatus();
-    this.makePost();
-    this.callGreet()
-    // const count = await this.passwordService.getMasterCount()
-    // if(!count){
+    // this.getStatus();
+    // this.makePost();
+    // this.callGreet()
+    const count = await this.passwordService.getMasterCount()
+    console.log("Count en appcomponent",);
+    if(!count  && !isNaN(count)){
       this.router.navigate(["/new"])
-    // }else{
-    //   this.router.navigate(["/login"])
+    }else{
+      this.router.navigate(["/login"])
     }
-  
+  }
 }

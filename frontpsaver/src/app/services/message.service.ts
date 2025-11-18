@@ -44,17 +44,34 @@ export class MessageService {
     console.log("Response from server", response);
     const id = response.Id ?? response.id!
     try {
-      if (this.pending.has(id)) {
-        const entry = this.pending.get(id);
-        this.pending.delete(id);
-        clearTimeout(entry?.timeoutId)
-        entry?.resolve(response.Payload);;
-      }
-      else {
-        const entry = this.pending.get(trackedId);
-        clearTimeout(entry?.timeoutId)
-        this.pending.delete(trackedId);
-        entry?.reject("Id not tracked");
+      if(response.Success ?? response.success ){
+        if(this.pending.has(id)){
+          const entry = this.pending.get(id);
+          this.pending.delete(id);
+          clearTimeout(entry?.timeoutId)
+          entry?.resolve(response.Payload);
+          return;
+        }else{
+          const entry = this.pending.get(trackedId);
+          clearTimeout(entry?.timeoutId)
+          this.pending.delete(trackedId);
+          entry?.reject("Id not tracked");
+          return;
+        }
+      }else{
+        if(this.pending.has(id)){
+          const entry = this.pending.get(id);
+          this.pending.delete(id);
+          clearTimeout(entry?.timeoutId)
+          entry?.reject(response.Error ?? response.error);
+          return;
+        }else{
+          const entry = this.pending.get(trackedId);
+          clearTimeout(entry?.timeoutId)
+          this.pending.delete(trackedId);
+          entry?.reject("Id not tracked and error response: "+(response.Error ?? response.error));
+          return;
+        }
       }
     } catch (error) {
       const entry = this.pending.get(trackedId);
@@ -62,6 +79,10 @@ export class MessageService {
       this.pending.delete(trackedId);
       throw new Error("An error ocurred at handling response: " + error);
     }
+
+  }
+
+  private dispatchResponse(id:number,trackedId:number,resolve:boolean,response:IResponse){
 
   }
 
