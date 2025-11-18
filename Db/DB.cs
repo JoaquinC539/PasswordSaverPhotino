@@ -72,11 +72,24 @@ public class DB
         }
         catch (System.Exception e)
         {
-
-            throw new Exception($"An exception ocurred at setting configs {e.Message}");
+            setToDefaultConfig();
+            throw new Exception($"An exception ocurred at setting configs, resetting to default: {e.Message}");
         }
 
 
+    }
+    private void setToDefaultConfig()
+    {
+        string configFile = GetConfigFile();
+        Console.WriteLine($"Reset string path {configFile}");
+        if (File.Exists(configFile))
+        {
+            Console.WriteLine("reseting default db values");
+            var newConfig = new { dbPath = GetDefaultDbPath() };
+            var json = JsonSerializer.Serialize(newConfig, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(configFile, json);
+        }
+        
     }
     public void CheckOrCreateDB()
     {
@@ -93,7 +106,8 @@ public class DB
     private void ConnectDb()
     {
         try
-        {
+        {   
+            Console.WriteLine($"Trying to connect to {DbPath}");
             string connectionString = $"Data Source={DbPath}";
             connection = new SqliteConnection(connectionString);
             connection.Open();
@@ -101,7 +115,7 @@ public class DB
         }
         catch (System.Exception e)
         {
-
+            setToDefaultConfig();
             throw new Exception("There was an exception at opening sqlite connection: " + e.Message);
         }
 
@@ -110,7 +124,7 @@ public class DB
     {
         try
         {
-            connection.Close();
+            connection?.Close();
             DbPath = GetConfigJson();
             CheckOrCreateDB();
             CreateOrCheckTables();
@@ -118,7 +132,8 @@ public class DB
         }
         catch (System.Exception e)
         {
-
+            setToDefaultConfig();
+            ReStartDB();
             throw new Exception("Exception at restarting DB: " + e.Message);
         }
 

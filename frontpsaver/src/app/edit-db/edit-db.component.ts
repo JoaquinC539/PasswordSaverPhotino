@@ -52,7 +52,6 @@ export class EditDBComponent implements OnInit {
         this.errorMessage.set("DB path cannot be empty");
       }
     } catch (error) {
-      console.error("Aqui debo salir");
       this.errorMessage.set("Error setting database: "+error);
       this.loading.set(false);
     }

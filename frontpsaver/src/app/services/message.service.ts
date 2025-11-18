@@ -34,7 +34,7 @@ export class MessageService {
           this.pending.delete(id)
           clearTimeout(entry.timeoutId);
           entry.reject(stringError);
-          console.log("en error esto se ejecuto en mmesage service");
+          
           
 
           throw new Error("An error ocurred at rquest", err)

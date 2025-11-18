@@ -35,7 +35,7 @@ public partial class WebViewPage :ContentPage
         catch (System.Exception e)
         {
             Console.WriteLine("Exception at starting server: " + e.Message);
-            throw;
+            throw new Exception("Error at generating webview :"+e.Message);
         }
 
     }
