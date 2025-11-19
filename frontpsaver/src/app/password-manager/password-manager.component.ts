@@ -4,7 +4,6 @@ import { RouterLink } from '@angular/router';
 import { Password, PasswordShow } from '../interfaces/data';
 import dayjs from "dayjs";
 import { ScreenLoaderComponent } from '../screen-loader/screen-loader.component';
-import {Tooltip} from 'bootstrap';
 
 @Component({
   selector: 'app-password-manager',
@@ -15,10 +14,12 @@ import {Tooltip} from 'bootstrap';
 export class PasswordManagerComponent implements OnInit {
   loading=signal<boolean>(false);
   errorMessage:WritableSignal<string>=signal<string>("");
+  message:WritableSignal<string>=signal<string>("");
   passwords:WritableSignal<PasswordShow[]>=signal<PasswordShow[]>([])
   passwordsArray:PasswordShow[]=[];
   passwordToDelete=signal<number>(0);
   siteNameFilter=signal<string>("");
+
   private searchTimeout:any;
   constructor(private passwordService:PasswordService){}
   async getPasswords(){
@@ -32,20 +33,22 @@ export class PasswordManagerComponent implements OnInit {
       this.passwords.set(dataWithShow);
       this.passwordsArray=(dataWithShow);
       this.loading.set(false);
-      
   }
   ngOnInit(): void {
       window.resizeTo(1450,600)
       this.getPasswords();
-      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new Tooltip(tooltipTriggerEl))
+      this.getPlatform();
+  }
+  async getPlatform(){
+    const res= await this.passwordService.getPlatform();
+    console.log("Platform: "+res);
   }
   dateParse(date:string|Date){
     return dayjs(date).format("DD/MM/YYYY")
-  }
+  };
   confirmDelete(id:number){
     this.passwordToDelete.set(id);
-  }
+  };
   deletePassword(){
     const id=this.passwordToDelete();
     this.loading.set(true)
@@ -85,5 +88,24 @@ export class PasswordManagerComponent implements OnInit {
       })
       
     });
+  }
+  async makeDump(){
+    this.loading.set(true);
+    this.errorMessage.set("");
+    try {
+      const res = await this.passwordService.makeBackup();
+      if(!res){
+        this.errorMessage.set("Backup wasn't made");
+      }else{
+        this.message.set("Backup made sucessfully");
+        setTimeout(()=>{
+          this.message.set("");
+        },5000)
+      }
+    } catch (error) {
+      this.errorMessage.set("An error ocurred: "+error);
+    }finally{
+      this.loading.set(false);
+    }
   }
 }

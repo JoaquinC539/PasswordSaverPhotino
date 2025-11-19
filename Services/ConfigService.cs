@@ -34,7 +34,7 @@ public class ConfigService
 
     }
 
-    public async Task<bool> ChangeDBInConfigAndroid()
+    private async Task<bool> ChangeDBInConfigAndroid()
     {
 
 
@@ -49,7 +49,7 @@ public class ConfigService
         try
         {
             // Console.WriteLine("The file it was chosen: " + fileGet.FileName + " - " + fileGet.FullPath + " mime: " + fileGet.ContentType);
-            if ( !fileGet.FileName.EndsWith(".db"))
+            if (!fileGet.FileName.EndsWith(".db"))
             {
                 return false;
             }
@@ -79,11 +79,11 @@ public class ConfigService
         }
         catch (IOException ex)
         {
-            throw new PermissionDeniedException ($"Error writing database try resetting the phone and try again {ex.Message}");
+            throw new PermissionDeniedException($"Error writing database try resetting the phone and try again {ex.Message}");
         }
         catch (UnauthorizedAccessException e)
         {
-            throw new PermissionDeniedException ($"Error writing database because access denied {e.Message}");
+            throw new PermissionDeniedException($"Error writing database because access denied {e.Message}");
         }
         catch (System.Exception e)
         {
@@ -92,7 +92,7 @@ public class ConfigService
         }
     }
 
-    public async Task<bool> ChangeDBInConfigDesktop()
+    private async Task<bool> ChangeDBInConfigDesktop()
     {
 
 
@@ -172,7 +172,7 @@ public class ConfigService
                 {
                     {DevicePlatform.WinUI, new[] { ".db"}},
                     {DevicePlatform.Android, new[] {"application/octet-stream", "application/x-sqlite3", "application/db"}}
-                    
+
                 }
             );
             PickOptions options = new()
@@ -194,4 +194,15 @@ public class ConfigService
             throw new Exception("Exception ocurred at filepicker " + e.Message);
         }
     }
+
+    public string GetPlatform()
+    {
+        return Utils.Utils.GetPlatform();
+    }
+
+    public async Task<bool> CopyToDirDb()
+    {
+        return false;
+    }
+    
 }

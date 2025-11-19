@@ -48,4 +48,10 @@ export class PasswordService {
   public changeDBFilePicker(){
     return this.messageService.send("dbLocation");    
   }
+  public getPlatform(){
+    return this.messageService.send("platform");
+  }
+  public makeBackup(){
+    return this.messageService.send("backup");
+  }
 }

@@ -38,7 +38,9 @@ public class OmniPasswordController
             ["getPassword"] = req => password.GetPassword(req),
             ["updatePassword"] = req => password.UpdatePassword(req),
             ["deletePassword"] = req => password.DeletePassword(req),
-            ["dbLocation"] = req=>config.HandleAsyncTask(req)
+            ["dbLocation"] = req=>config.HandleAsyncTask(req),
+            ["platform"] = req => config.GetPlatform(req),
+            ["backup"] = req => config.MakeBackup(req)
         };
 
     }
