@@ -18,10 +18,18 @@ export class MessageService {
   public send<T = any>(type: string, payload?: any): Promise<T> {
     const id = ++this.requestId;
     const req = new Request(id, type, payload);
+    const timer = type ==="dbLocation" ? 1000*420 :1000* 45;
     const timeoutId = setTimeout(() => {
-      this.pending.delete(id);
-      throw new Error("Timeout for id: " + id);
-    }, 1000 * 45);
+      const entry = this.pending.get(id);
+      if(entry){
+        this.pending.delete(id);
+        entry.reject("Timeout rejection");
+      }else{
+        throw new Error("Timeout exception");
+      }
+      
+      
+    }, timer);
     return new Promise<T>((resolve, reject) => {
       const entry: PendingEntry = { resolve, reject, timeoutId };
       this.pending.set(id, entry);

@@ -57,4 +57,30 @@ export class EditDBComponent implements OnInit {
     }
 
   }
+  async selectDBFilePicker(): Promise<void> {
+    
+    this.errorMessage.set("");
+    // const filePath = this.dbForm.value.dbFile;
+    try {
+      this.loading.set(true);
+      await this.passwordService.logout()
+      const res = await this.passwordService.changeDBFilePicker()
+      if (!res) {
+          this.errorMessage.set("File not existant or not valid, the database wasn't updated");
+          this.loading.set(false);
+          return;
+        }
+        const count = await this.passwordService.getMasterCount()
+        if (!count) {
+          this.router.navigate(["/new"])
+        } else {
+          this.router.navigate(["/login"])
+        }
+        this.loading.set(false);
+    } catch (error) {
+      this.errorMessage.set("Error setting database: "+error);
+      this.loading.set(false);
+    }
+
+  } 
 }

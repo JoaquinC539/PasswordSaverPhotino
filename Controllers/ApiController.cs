@@ -59,6 +59,11 @@ public class ApiController : WebApiController
             Response.StatusCode = 400;
             return new Response { Id = 0, Type = "failure", Success = false, Error = "Incomplete data exception: " + e.Message };
         }
+        catch (PermissionDeniedException e)
+        {
+            Response.StatusCode = 403;
+            return new Response {Id =0, Type="failure", Success=false, Error=$"PermissionDeniedException: {e}"};
+        }
         catch (NullDataException e)
         {
             Response.StatusCode = 503;

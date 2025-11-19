@@ -45,4 +45,7 @@ export class PasswordService {
   public changeDB(filePath:string){
     return this.messageService.send("dbLocation",filePath);    
   }
+  public changeDBFilePicker(){
+    return this.messageService.send("dbLocation");    
+  }
 }

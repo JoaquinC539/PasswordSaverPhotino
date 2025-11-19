@@ -16,8 +16,14 @@
 </section>
 <div class="container-fluid d-flex justify-content-center align-items-center p-2 flex-column" [style]="{minHeight:'300px'}">
     <div class="row">
-        <div class="col-12">            
-            <form [formGroup]="dbForm" (submit)="selectDB($event)">
+        <div class="col-12">   
+            <div class="row">
+                    <label for="dbPath" class="form-label">If you already have a DB set the path with filename and extension to it (Only ones created by this application)</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="dbPath" aria-describedby="input_dbpath" formControlName="dbFile" (click)="selectDBFilePicker()" >
+                    </div>
+                </div>         
+            <!-- <form [formGroup]="dbForm" (submit)="selectDB($event)">
                 <div class="row">
                     <label for="dbPath" class="form-label">If you already have a DB set the path with filename and extension to it (Only ones created by this application)</label>
                     <div class="input-group">
@@ -27,7 +33,7 @@
                 <div class="row mt-1 f-flex justify-content-center">
                     <button type="submit" class="btn btn-primary mt-1" style="max-width:200px;">Use selected DB</button>
                 </div>
-            </form>
+            </form> -->
         </div>
     </div>
 </div>
