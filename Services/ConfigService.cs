@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PasswordSaver.Database;
+using PasswordSaver.Models;
 using SQLitePCL;
 
 namespace PasswordSaver.Services;
@@ -27,53 +28,88 @@ public class ConfigService
     }
     public async Task<bool> ChangeDBInConfig()
     {
-        #if ANDROID 
-             await ChangeDBInConfigAndroid();
-            return false;
-        #else
-            return await ChangeDBInConfigDesktop();
-        #endif
-        
+#if ANDROID
+             return await ChangeDBInConfigAndroid();
+            
+#else
+        return await ChangeDBInConfigDesktop();
+#endif
 
     }
 
     public async Task<bool> ChangeDBInConfigAndroid()
     {
+
+
+        var fileGet = await PickAndShow();
+        if (fileGet == null)
+        {
+            Console.WriteLine("file is null");
+            return false;
+        }
+
+
         try
         {
-            
-            var fileGet=await PickAndShow();
-            if (fileGet == null)
+            // Console.WriteLine("The file it was chosen: " + fileGet.FileName + " - " + fileGet.FullPath + " mime: " + fileGet.ContentType);
+            if ( !fileGet.FileName.EndsWith(".db"))
             {
-                Console.WriteLine("file is null");
                 return false;
             }
-            Console.WriteLine("The file it was chosen: "+fileGet.FileName + " - "+fileGet.FullPath+" mime: "+fileGet.ContentType);
-            
+            using Stream pickedStream = await fileGet.OpenReadAsync();
+            string internalFolder = FileSystem.AppDataDirectory;
+            // Console.WriteLine($"Internal folder {internalFolder}");
+            string destPath = Path.Combine(internalFolder, fileGet.FileName);
+            // Console.WriteLine($"Dest path {destPath}");
+
+            using FileStream destStream = File.Create(destPath);
+            await pickedStream.CopyToAsync(destStream);
+            // Console.WriteLine($"File copied to internal storage: {destPath}");
+            string configFile = GetConfigFile();
+            if (File.Exists(configFile))
+            {
+                // Console.WriteLine("Writing over config and updating db");
+                // var newConfig = new { dbPath = FilePath };
+                var newConfig = new { dbPath = destPath };
+                var json = JsonSerializer.Serialize(newConfig, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(configFile, json);
+                db.ReStartDB();
+                return true;
+            }
+
             return false;
 
         }
+        catch (IOException ex)
+        {
+            throw new PermissionDeniedException ($"Error writing database try resetting the phone and try again {ex.Message}");
+        }
+        catch (UnauthorizedAccessException e)
+        {
+            throw new PermissionDeniedException ($"Error writing database because access denied {e.Message}");
+        }
         catch (System.Exception e)
         {
-            
+
             throw new Exception($"Exception ocurred at ChangeDBInConfigAndroid {e.Message}");
         }
     }
 
     public async Task<bool> ChangeDBInConfigDesktop()
     {
+
+
+        string configFile = GetConfigFile();
+        // logger.LogInformation("ConfigFilePath: {path}", configFile);
+        var fileGet = await PickAndShow();
+        if (fileGet == null)
+        {
+            Console.WriteLine("file is null");
+            return false;
+        }
         try
         {
-            
-            string configFile = GetConfigFile();
-            // logger.LogInformation("ConfigFilePath: {path}", configFile);
-             var fileGet=await PickAndShow();
-            if (fileGet == null)
-            {
-                Console.WriteLine("file is null");
-                return false;
-            }
-            string FilePath=fileGet.FullPath;
+            string FilePath = fileGet.FullPath;
             // Console.WriteLine("The file it was chosen: "+fileGet.FileName + " - "+fileGet.FullPath+" mime: "+fileGet.ContentType);
             // Console.WriteLine("File exists? "+File.Exists(FilePath));
             // Console.WriteLine("File ends with .db: "+FilePath.EndsWith(".db")); 
@@ -113,7 +149,7 @@ public class ConfigService
     {
         try
         {
-            using var fileStream = File.Open(filePath,FileMode.Open,FileAccess.Read);
+            using var fileStream = File.Open(filePath, FileMode.Open, FileAccess.Read);
             return true;
         }
         catch (UnauthorizedAccessException)
@@ -130,15 +166,16 @@ public class ConfigService
         }
     }
 
-    private async Task<FileResult>? PickAndShow()
+    private async Task<FileResult?> PickAndShow()
     {
         try
         {
-            FilePickerFileType types= new FilePickerFileType(
+            FilePickerFileType types = new FilePickerFileType(
                 new Dictionary<DevicePlatform, IEnumerable<string>>
                 {
                     {DevicePlatform.WinUI, new[] { ".db"}},
                     {DevicePlatform.Android, new[] {"application/octet-stream", "application/x-sqlite3", "application/db"}}
+                    
                 }
             );
             PickOptions options = new()
@@ -156,8 +193,8 @@ public class ConfigService
         }
         catch (System.Exception e)
         {
-            
-            throw new Exception("Exception ocurred at filepicker "+e.Message);
+
+            throw new Exception("Exception ocurred at filepicker " + e.Message);
         }
     }
 }
