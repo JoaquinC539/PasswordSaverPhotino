@@ -39,12 +39,16 @@ export class AppComponent implements OnInit{
     // this.getStatus();
     // this.makePost();
     // this.callGreet()
-    const count = await this.passwordService.getMasterCount()
-    console.log("Count en appcomponent",);
+    try {
+      const count = await this.passwordService.getMasterCount()
     if(!count  && !isNaN(count)){
       this.router.navigate(["/new"])
     }else{
       this.router.navigate(["/login"])
     }
+    } catch (error) {
+      console.error("Count had an error: "+error);
+    }
+    
   }
 }

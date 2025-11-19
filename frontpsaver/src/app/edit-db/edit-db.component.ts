@@ -1,13 +1,12 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { LoginStateService } from '../services/loginState.service';
 import { PasswordService } from '../services/password.service';
 import { ScreenLoaderComponent } from '../screen-loader/screen-loader.component';
 
 @Component({
   selector: 'app-edit-db',
-  imports: [ReactiveFormsModule, RouterLink, ScreenLoaderComponent],
+  imports: [ReactiveFormsModule, ScreenLoaderComponent],
   templateUrl: './edit-db.component.html',
   styleUrl: './edit-db.component.scss'
 })
@@ -21,11 +20,25 @@ export class EditDBComponent implements OnInit {
 
   constructor(private passwordService: PasswordService, private router: Router, private route: ActivatedRoute) { }
   ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      this.backFrom.set(params["from"]);
-    });
+    // this.route.queryParams.subscribe((params) => {
+    //   console.log("From: " + params["from"]);
+    //   this.backFrom.set(params["from"]);
+    // });
   }
 
+  async navigateBack() {
+    try {
+      const count = await this.passwordService.getMasterCount();
+      console.log(count);
+      if (!count && !isNaN(count)) {
+        this.router.navigate(["/new"])
+      } else {
+        this.router.navigate(["/login"])
+      }
+    } catch (error) {
+      this.errorMessage.set("An error ocurred at navigating back: "+error)
+    }
+  }
 
   async selectDB(event: SubmitEvent): Promise<void> {
     event.preventDefault();
@@ -52,13 +65,13 @@ export class EditDBComponent implements OnInit {
         this.errorMessage.set("DB path cannot be empty");
       }
     } catch (error) {
-      this.errorMessage.set("Error setting database: "+error);
+      this.errorMessage.set("Error setting database: " + error);
       this.loading.set(false);
     }
 
   }
   async selectDBFilePicker(): Promise<void> {
-    
+
     this.errorMessage.set("");
     // const filePath = this.dbForm.value.dbFile;
     try {
@@ -66,21 +79,21 @@ export class EditDBComponent implements OnInit {
       await this.passwordService.logout()
       const res = await this.passwordService.changeDBFilePicker()
       if (!res) {
-          this.errorMessage.set("File not existant or not valid, the database wasn't updated");
-          this.loading.set(false);
-          return;
-        }
-        const count = await this.passwordService.getMasterCount()
-        if (!count) {
-          this.router.navigate(["/new"])
-        } else {
-          this.router.navigate(["/login"])
-        }
+        this.errorMessage.set("File not existant, not valid or aborted. The database wasn't updated");
         this.loading.set(false);
+        return;
+      }
+      const count = await this.passwordService.getMasterCount()
+      if (!count) {
+        this.router.navigate(["/new"])
+      } else {
+        this.router.navigate(["/login"])
+      }
+      this.loading.set(false);
     } catch (error) {
-      this.errorMessage.set("Error setting database: "+error);
+      this.errorMessage.set("Error setting database: " + error);
       this.loading.set(false);
     }
 
-  } 
+  }
 }
