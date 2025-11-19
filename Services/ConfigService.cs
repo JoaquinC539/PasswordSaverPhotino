@@ -1,9 +1,6 @@
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using PasswordSaver.Database;
 using PasswordSaver.Models;
-using SQLitePCL;
 
 namespace PasswordSaver.Services;
 
