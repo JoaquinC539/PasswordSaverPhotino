@@ -68,6 +68,16 @@ public class ApiController : WebApiController
             Response.StatusCode = 503;
             return new Response { Id = 0, Type = "failure", Success = false, Error = "Null data exception: " + e.Message };
         }
+        catch( NotImplementedException e)
+        {
+            Response.StatusCode = 405;
+            return new Response {Id = 0, Type = "failure", Success = false, Error = "Not implemented exception: " + e.Message};
+        }
+        catch(IOException e)
+        {
+            Response.StatusCode = 403;
+            return new Response {Id =0, Type="failure", Success=false, Error=$"IOException: {e}"};
+        }
         catch (Exception e)
         {
             Response.StatusCode = 500;

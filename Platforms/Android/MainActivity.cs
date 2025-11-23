@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
-using PasswordSaver.Platform.Android;
+using PasswordSaver.Platforms.Android;
 
 namespace PasswordSaver;
 

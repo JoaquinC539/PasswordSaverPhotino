@@ -1,5 +1,6 @@
 using System.Text.Json;
 using PasswordSaver.Database;
+using PasswordSaver.Interfaces;
 using PasswordSaver.Models;
 
 namespace PasswordSaver.Services;
@@ -53,14 +54,17 @@ public class ConfigService
             {
                 return false;
             }
-            using Stream pickedStream = await fileGet.OpenReadAsync();
             string internalFolder = FileSystem.AppDataDirectory;
-            // Console.WriteLine($"Internal folder {internalFolder}");
             string destPath = Path.Combine(internalFolder, fileGet.FileName);
-            // Console.WriteLine($"Dest path {destPath}");
+            await Utils.Utils.CopierDbAsync(fileGet,destPath);
+            // using Stream pickedStream = await fileGet.OpenReadAsync();
+            
+            // // Console.WriteLine($"Internal folder {internalFolder}");
+            
+            // // Console.WriteLine($"Dest path {destPath}");
 
-            using FileStream destStream = File.Create(destPath);
-            await pickedStream.CopyToAsync(destStream);
+            // using FileStream destStream = File.Create(destPath);
+            // await pickedStream.CopyToAsync(destStream);
             // Console.WriteLine($"File copied to internal storage: {destPath}");
             string configFile = GetConfigFile();
             if (File.Exists(configFile))
@@ -197,10 +201,45 @@ public class ConfigService
 
     public string GetPlatform()
     {
+        
         return Utils.Utils.GetPlatform();
     }
 
     public async Task<bool> CopyToDirDb()
+    {
+
+        #if ANDROID
+        return await CopytoDirAndroid();
+        #elif WINDOWS        
+        return await CopytoDirWindows();
+        #else
+        return false;
+        #endif
+        
+        
+    }
+    private async Task<bool> CopytoDirWindows()
+    {
+        var folderPIcker = ServiceHelper.GetService<IFolderPicker>();
+        var path = await folderPIcker?.PickFolderAsync();
+        if(path == null)
+        {
+            return false;
+        }
+        Console.WriteLine("foler path: "+path);
+        string fileName = $"CipheredBackup_{DateTime.Now.ToString("ddMMyy")}.db";
+        string DbPath = db.DbPath;
+        string destfilePath=$"{path}/{fileName}";
+        string sqlQuery =$"VACUUM main INTO '{destfilePath.Replace("'", "''")}'";
+        Console.WriteLine(sqlQuery);
+        
+        bool res=db.ExecQuery(sqlQuery);
+
+       
+        
+        return res;
+    }
+    private async Task<bool> CopytoDirAndroid()
     {
         return false;
     }

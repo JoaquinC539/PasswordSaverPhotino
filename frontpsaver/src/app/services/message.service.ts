@@ -18,7 +18,8 @@ export class MessageService {
   public send<T = any>(type: string, payload?: any): Promise<T> {
     const id = ++this.requestId;
     const req = new Request(id, type, payload);
-    const timer = type ==="dbLocation" ? 1000*420 :1000* 45;
+    const specialtimeOuts=["dbLocation","backup"];
+    const timer = specialtimeOuts.includes(type) ? 1000*420 :1000* 45;
     const timeoutId = setTimeout(() => {
       const entry = this.pending.get(id);
       if(entry){

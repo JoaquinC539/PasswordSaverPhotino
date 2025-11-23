@@ -1,6 +1,6 @@
 using Android.Content.Res;
 
-namespace PasswordSaver.Platform.Android;
+namespace PasswordSaver.Platforms.Android;
 
 public class CopyUiToAppData
 {

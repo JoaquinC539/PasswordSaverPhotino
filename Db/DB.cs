@@ -8,9 +8,9 @@ public class DB
 {
     private static DB? dbInstance;
 
-    private SqliteConnection connection;
+    private SqliteConnection? connection;
 
-    private string DbPath;
+    public string DbPath;
 
     private DB()
     {
@@ -102,8 +102,7 @@ public class DB
 
         ConnectDb();
     }
-
-    private void ConnectDb()
+    public void ConnectDb()
     {
         try
         {   
@@ -120,6 +119,8 @@ public class DB
         }
 
     }
+    
+    
     public void ReStartDB()
     {
         try
