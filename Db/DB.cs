@@ -120,6 +120,15 @@ public class DB
 
     }
     
+    public async Task DisonnectAndDisposeconnection()
+    {
+        if(connection != null)
+        {
+            connection.Close();
+            await connection.DisposeAsync();
+        
+        }
+    }
     
     public void ReStartDB()
     {

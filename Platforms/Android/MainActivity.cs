@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using PasswordSaver.Platforms.Android;
@@ -13,4 +14,17 @@ public class MainActivity : MauiAppCompatActivity
         base.OnCreate(savedInstanceState);
         CopyUiToAppData.Copy(Assets);
     }
+
+  protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
+  {
+    base.OnActivityResult(requestCode, resultCode, data);
+    Console.WriteLine("Activity registered");
+    if(requestCode == 9999)
+        {
+            FolderPickerService.ActivityResultCallback?.Invoke(resultCode,data);
+            
+        }
+  }
+
+    
 }

@@ -228,19 +228,23 @@ public class ConfigService
         }
         Console.WriteLine("foler path: "+path);
         string fileName = $"CipheredBackup_{DateTime.Now.ToString("ddMMyy")}.db";
-        string DbPath = db.DbPath;
         string destfilePath=$"{path}/{fileName}";
         string sqlQuery =$"VACUUM main INTO '{destfilePath.Replace("'", "''")}'";
-        Console.WriteLine(sqlQuery);
-        
         bool res=db.ExecQuery(sqlQuery);
-
-       
-        
         return res;
     }
     private async Task<bool> CopytoDirAndroid()
     {
+        Console.WriteLine("Starting backup func");
+        var folderPicker = ServiceHelper.GetService<IFolderPicker>();
+        var uriString= await folderPicker.PickFolderAsync();
+        Console.WriteLine("I passed the picker async");
+        if(uriString == null)
+        {
+            return false;
+        }
+        
+        Console.WriteLine("Selected folder URI: " + uriString);
         return false;
     }
     
