@@ -22,6 +22,7 @@ public static class MauiProgram
          builder.Services.AddTransient<IFolderPicker,Platforms.Windows.FolderPickerService>();
 #elif ANDROID
         builder.Services.AddTransient<IFolderPicker,Platforms.Android.FolderPickerService>();
+        builder.Services.AddTransient<ISafService,Platforms.Android.SafService>();
 #endif
 
         DB db = DB.GetDB();

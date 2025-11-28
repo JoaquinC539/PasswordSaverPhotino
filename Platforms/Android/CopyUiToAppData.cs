@@ -22,7 +22,6 @@ public class CopyUiToAppData
 
     private static void CopyAssetsFolder(AssetManager assets, string assetFolderPath, string destFolderPath)
     {
-        Console.WriteLine("Executing assets copier...");
         Directory.CreateDirectory(destFolderPath);
 
         string[] assetsList = assets.List(assetFolderPath) ?? [];

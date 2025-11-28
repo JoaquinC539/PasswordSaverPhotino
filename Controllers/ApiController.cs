@@ -78,6 +78,11 @@ public class ApiController : WebApiController
             Response.StatusCode = 403;
             return new Response {Id =0, Type="failure", Success=false, Error=$"IOException: {e}"};
         }
+        catch (TaskCanceledException)
+        {
+            Response.StatusCode = 400;
+            return new Response { Id=0,Type="failure",Success=false,Error=$"Operation cancelled"};
+        }
         catch (Exception e)
         {
             Response.StatusCode = 500;

@@ -2,7 +2,6 @@ using System.Text.Json;
 using PasswordSaver.Database;
 using PasswordSaver.Interfaces;
 using PasswordSaver.Models;
-
 namespace PasswordSaver.Services;
 
 public class ConfigService
@@ -45,11 +44,9 @@ public class ConfigService
             Console.WriteLine("file is null");
             return false;
         }
-
-
         try
         {
-            // Console.WriteLine("The file it was chosen: " + fileGet.FileName + " - " + fileGet.FullPath + " mime: " + fileGet.ContentType);
+            
             if (!fileGet.FileName.EndsWith(".db"))
             {
                 return false;
@@ -57,20 +54,9 @@ public class ConfigService
             string internalFolder = FileSystem.AppDataDirectory;
             string destPath = Path.Combine(internalFolder, fileGet.FileName);
             await Utils.Utils.CopierDbAsync(fileGet,destPath);
-            // using Stream pickedStream = await fileGet.OpenReadAsync();
-            
-            // // Console.WriteLine($"Internal folder {internalFolder}");
-            
-            // // Console.WriteLine($"Dest path {destPath}");
-
-            // using FileStream destStream = File.Create(destPath);
-            // await pickedStream.CopyToAsync(destStream);
-            // Console.WriteLine($"File copied to internal storage: {destPath}");
             string configFile = GetConfigFile();
             if (File.Exists(configFile))
             {
-                // Console.WriteLine("Writing over config and updating db");
-                // var newConfig = new { dbPath = FilePath };
                 var newConfig = new { dbPath = destPath };
                 var json = JsonSerializer.Serialize(newConfig, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(configFile, json);
@@ -213,7 +199,7 @@ public class ConfigService
         #elif WINDOWS        
         return await CopytoDirWindows();
         #else
-        return false;
+        throw new NotImplementedException("Method is not implemented on this device");
         #endif
         
         
@@ -235,17 +221,21 @@ public class ConfigService
     }
     private async Task<bool> CopytoDirAndroid()
     {
-        Console.WriteLine("Starting backup func");
         var folderPicker = ServiceHelper.GetService<IFolderPicker>();
         var uriString= await folderPicker.PickFolderAsync();
-        Console.WriteLine("I passed the picker async");
         if(uriString == null)
         {
             return false;
         }
         
-        Console.WriteLine("Selected folder URI: " + uriString);
-        return false;
+        //Actually can't make the copy logic here
+        var SafService = ServiceHelper.GetService<ISafService>();
+        if(SafService == null)
+        {
+            throw new NotImplementedException("Android Service not Implemented");
+        }
+        return await SafService.BackUpToExternalFolderAsync(uriString);
+        
     }
     
 }

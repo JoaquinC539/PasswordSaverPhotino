@@ -13,7 +13,6 @@ public class FolderPickerService : IFolderPicker
     public static Action<Result,Intent?>? ActivityResultCallback {get; set;}
     public Task<string?> PickFolderAsync()
     {
-        Console.WriteLine("Called service async");
         _tcs = new TaskCompletionSource<string?>();
         var activity = Platform.CurrentActivity ?? throw new Exception("No current activity");
         var intent = new Intent(Intent.ActionOpenDocumentTree);
@@ -25,7 +24,6 @@ public class FolderPickerService : IFolderPicker
         );
         ActivityResultCallback = OnActivityResult;
         activity.StartActivityForResult(intent,9999);
-        Console.WriteLine("After started activity in service");
         return _tcs.Task;
     }
 
@@ -50,12 +48,10 @@ public class FolderPickerService : IFolderPicker
             ActivityFlags.GrantReadUriPermission | ActivityFlags.GrantWriteUriPermission);   
             _tcs.TrySetResult(uri.ToString());
         }
-        else
-        {
-            
-        }
-        
+       
     }
+
+    
 
    
 

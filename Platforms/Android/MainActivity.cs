@@ -18,7 +18,6 @@ public class MainActivity : MauiAppCompatActivity
   protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
   {
     base.OnActivityResult(requestCode, resultCode, data);
-    Console.WriteLine("Activity registered");
     if(requestCode == 9999)
         {
             FolderPickerService.ActivityResultCallback?.Invoke(resultCode,data);

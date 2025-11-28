@@ -93,7 +93,7 @@ public class OmniPasswordController
                 Payload = result,
                 Success = true
             };
-            Console.WriteLine("Sending: "+JsonSerializer.Serialize(res));
+            // Console.WriteLine("Sending: "+JsonSerializer.Serialize(res));
             return res;
         }
         catch (System.Exception e)

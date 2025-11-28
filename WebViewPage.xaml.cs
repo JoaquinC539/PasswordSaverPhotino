@@ -42,7 +42,6 @@ public partial class WebViewPage :ContentPage
 
     public void NavigatingHandler(object? sender, WebNavigatingEventArgs e)
     {
-        Console.WriteLine("URL navegating to " + e.Url);
         if (!e.Url.Contains("cachebuster"))
         {
             e.Cancel = true;
@@ -51,7 +50,6 @@ public partial class WebViewPage :ContentPage
             query["cachebuster"] = DateTime.Now.Ticks.ToString();
             urlBuilder.Query = query.ToString();
             string finalUrl = urlBuilder.ToString();
-            Console.WriteLine("Changing url to: " + finalUrl);
             WebViewElement.Source = new UrlWebViewSource { Url = finalUrl };
         }
     }

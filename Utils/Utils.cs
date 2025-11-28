@@ -52,7 +52,7 @@ public static class Utils
             }
             using FileStream sourceStream = new FileStream(originPathFile,FileMode.Open,FileAccess.Read);
             using FileStream destStream = File.Create(destPathFile);
-            sourceStream.CopyTo(destStream);
+            await sourceStream.CopyToAsync(destStream);
             return true;
         }
         catch (System.Exception e)
