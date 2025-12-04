@@ -126,7 +126,8 @@ public class ConfigService
 #if ANDROID || IOS
         string configFile = Path.Combine(FileSystem.AppDataDirectory, "psaverConfig.json");
 #else
-        string configFile = Path.Combine(AppContext.BaseDirectory, "psaverConfig.json");
+        // string configFile = Path.Combine(AppContext.BaseDirectory, "psaverConfig.json");
+        string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"PasswordSaver","psaverConfig.json");;
 #endif
         return configFile;
 

@@ -29,8 +29,12 @@ public class DB
 #if ANDROID || IOS
         string configFile = Path.Combine(FileSystem.AppDataDirectory, "psaverConfig.json");
 #else
-        string configFile = Path.Combine(AppContext.BaseDirectory, "psaverConfig.json");
+        // string configFile = Path.Combine(AppContext.BaseDirectory, "psaverConfig.json");
+        Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"PasswordSaver"));
+        string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"PasswordSaver","psaverConfig.json");
 #endif
+        
+        Console.WriteLine($"path to create files {configFile}");
         return configFile;
 
     }
@@ -40,8 +44,10 @@ public class DB
 #if ANDROID || IOS
         string defaultDBPath = Path.Combine(FileSystem.AppDataDirectory, "data.db");
 #else
-        string defaultDBPath = Path.Combine(AppContext.BaseDirectory, "data.db");
+        Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"PasswordSaver"));
+        string defaultDBPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"PasswordSaver", "data.db");
 #endif
+        Console.WriteLine($"path for standard db {defaultDBPath}");
         return defaultDBPath;
 
     }
