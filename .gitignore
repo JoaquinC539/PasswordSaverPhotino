@@ -12,4 +12,6 @@ realeses.zip
 releases
 releases.zip
 
-*.iss
+GenerateCertificate.ps1
+Platforms/Windows/Package.appxmanifest
+Platforms/Windows/Package.appxmanifest

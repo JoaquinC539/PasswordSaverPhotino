@@ -6,13 +6,16 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap rescap">
 
-  <Identity Name="maui-package-name-placeholder" Publisher="CN=User Name" Version="0.0.0.0" />
+  <!-- <Identity Name="JCOpenSoftware.password-saver" Publisher="CN=FABE94CC-5FCA-4AA5-8F0B-DA95126BD503"  Version="1.0.0.0" /> -->
+  <Identity Name="JCOpenSoftware.password-saver" Publisher="CN=OpenJCSoftware"  Version="1.0.0.0" />
+  
 
   <mp:PhoneIdentity PhoneProductId="FCA8918D-D57E-4DAB-A488-69BF7640CC6F" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>$placeholder$</DisplayName>
-    <PublisherDisplayName>User Name</PublisherDisplayName>
+    <!-- <DisplayName>password-saver</DisplayName> -->
+    <DisplayName>Password Saver</DisplayName>
+    <PublisherDisplayName>JC Open Software</PublisherDisplayName>
     <Logo>$placeholder$.png</Logo>
   </Properties>
 
