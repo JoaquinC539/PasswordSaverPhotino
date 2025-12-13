@@ -9,9 +9,11 @@ public class MasterPasswordService
     private static MasterPasswordService? instance = null;
     private DB dB = DB.GetDB();
 
+
+
     private string encryptionKey = "";
 
-    private MasterPasswordService() { }
+    public MasterPasswordService() { }
     public static MasterPasswordService GetInstance()
     {
         if (instance == null)
@@ -50,11 +52,17 @@ public class MasterPasswordService
 
     public string GetEncryptKey()
     {
+
         if (encryptionKey == "")
         {
-            throw new InvalidOperationException("Encryption key not initialized. Did you log in?");
+            throw new InvalidOperationException(
+                $"Encryption key not initialized on instance {GetHashCode()}. " +
+                $"Current thread: {Environment.CurrentManagedThreadId}. " +
+                "Did you call VerifyPassword first?");
         }
         return encryptionKey;
+
+
     }
 
     public Task<bool?> InsertMasterPasswordAsync(string password)
@@ -92,8 +100,12 @@ public class MasterPasswordService
             bool samePassword = BCrypt.Net.BCrypt.Verify(password, hashPassword);
             if (samePassword)
             {
+
                 Console.WriteLine("Setting encryptkey");
                 encryptionKey = GenerateEncryptKey(password, keySalt);
+                // System.Threading.Interlocked.MemoryBarrier();
+
+
             }
             return samePassword;
         }

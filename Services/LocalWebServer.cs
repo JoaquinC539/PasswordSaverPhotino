@@ -60,12 +60,13 @@ public class LocalWebServer
         WebServer server = new WebServer(o => o
         .WithUrlPrefix(url)
         .WithMode(HttpListenerMode.EmbedIO));
-        server.WithModule(GetCorsModule());
+        server.WithModule(GetCorsModule());        
         server
         .WithWebApi("/api",m=> m
             .WithController<ApiController>()
             )
         .WithStaticFolder("/", rootpath, true);
+        
         return server;
     }
     private static int GetFreePort()

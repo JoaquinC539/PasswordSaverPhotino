@@ -10,6 +10,6 @@ public static class ServiceHelper
     } 
 
     public static IServiceProvider Current =>
-        Application.Current!.MainPage!.Handler!.MauiContext!.Services; // o Application.Current.Services
+        Application.Current!.Windows[0]!.Handler!.MauiContext!.Services;
 }
 

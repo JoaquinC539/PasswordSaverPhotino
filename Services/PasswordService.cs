@@ -16,7 +16,12 @@ public class PasswordService
     private string EncryptKey = "";
     private PasswordService()
     {
-        masterPasswordService = MasterPasswordService.GetInstance();
+        masterPasswordService = ServiceHelper.GetService<MasterPasswordService>();
+        if(masterPasswordService == null)
+        {
+            throw new NotImplementedException("masterPasswordService not initated");
+        }
+        // masterPasswordService = MasterPasswordService.GetInstance();
     }
 
 

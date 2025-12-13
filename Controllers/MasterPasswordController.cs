@@ -8,7 +8,13 @@ public class MasterPasswordController : IController
     private MasterPasswordService masterPasswordService;
     public MasterPasswordController()
     {
-        masterPasswordService = MasterPasswordService.GetInstance();
+        masterPasswordService=ServiceHelper.GetService<MasterPasswordService>()!;
+        // masterPasswordService = ServiceHelper.GetService<MasterPasswordService>();
+        if(masterPasswordService == null)
+        {
+            throw new NotImplementedException("masterPasswordService not initated");
+        }
+        // masterPasswordService = MasterPasswordService.GetInstance();
     }
 
     public async Task<object?> HandleAsyncTask(Request req)

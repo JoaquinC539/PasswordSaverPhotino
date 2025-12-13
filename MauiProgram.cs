@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using PasswordSaver.Database;
 using PasswordSaver.Interfaces;
+using PasswordSaver.Services;
 
 namespace PasswordSaver;
 
@@ -18,7 +19,7 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
         
-
+        builder.Services.AddSingleton<MasterPasswordService>();
 
 #if WINDOWS
          builder.Services.AddTransient<IFolderPicker,Platforms.Windows.FolderPickerService>();
