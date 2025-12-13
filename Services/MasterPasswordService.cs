@@ -92,6 +92,7 @@ public class MasterPasswordService
             bool samePassword = BCrypt.Net.BCrypt.Verify(password, hashPassword);
             if (samePassword)
             {
+                Console.WriteLine("Setting encryptkey");
                 encryptionKey = GenerateEncryptKey(password, keySalt);
             }
             return samePassword;

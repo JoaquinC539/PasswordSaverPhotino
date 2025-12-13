@@ -53,7 +53,7 @@ export class MessageService {
     })
   }
   private handleResponse(response: IResponse, trackedId: number): void {
-    console.log("Response from server", response);
+    // console.log("Response from server", response);
     const id = response.Id ?? response.id!
     try {
       if(response.Success ?? response.success ){

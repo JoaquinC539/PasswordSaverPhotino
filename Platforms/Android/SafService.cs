@@ -1,5 +1,7 @@
-using AndroidX.DocumentFile.Provider;
+// using AndroidX.DocumentFile.Provider;
 using PasswordSaver.Database;
+// using Xamarin.Android.Net;
+using AndroidX.DocumentFile.Provider;
 using PasswordSaver.Models;
 using AndroidUri=Android.Net.Uri;
 namespace PasswordSaver.Platforms.Android;
@@ -11,8 +13,10 @@ public class SafService : ISafService
     
     private DocumentFile? ResolveFolder (string uriString)
     {
+        
         var context = Platform.AppContext!;
         AndroidUri treeUri = AndroidUri.Parse(uriString)!;
+        
         return DocumentFile.FromTreeUri(context,treeUri);
     }
 

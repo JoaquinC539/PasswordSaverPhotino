@@ -1,18 +1,21 @@
-import { Component, effect, OnInit } from '@angular/core';
+import { Component, effect, OnInit, signal } from '@angular/core';
 import {  Router, RouterOutlet } from '@angular/router';
 import { HelloService } from './services/hello.service';
 import { PasswordService } from './services/password.service';
 import { LoginStateService } from './services/loginState.service';
+import { CommonModule } from '@angular/common';
+
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet,CommonModule ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit{
   title = 'frontpsaver';
+  platform = signal<string>("");
   constructor(private helloService:HelloService,private passwordService:PasswordService,private router:Router,public loginState:LoginStateService){
    
   }
@@ -26,6 +29,12 @@ export class AppComponent implements OnInit{
     const res = await this.helloService.makePost();
     console.log(res)
   }
+  async getPlatform(){
+    const res= await this.passwordService.getPlatform();
+    console.log("Platform: "+res);
+    this.platform.set(res);
+    this.loginState.platform.set(res);
+  }
   
   handleLogout(){
     this.loginState.logout()
@@ -36,6 +45,7 @@ export class AppComponent implements OnInit{
     console.log(res);
   } 
   async ngOnInit(): Promise<void> {  
+    this.getPlatform();
     // this.getStatus();
     // this.makePost();
     // this.callGreet()

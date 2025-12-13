@@ -17,6 +17,8 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
+        
+
 
 #if WINDOWS
          builder.Services.AddTransient<IFolderPicker,Platforms.Windows.FolderPickerService>();

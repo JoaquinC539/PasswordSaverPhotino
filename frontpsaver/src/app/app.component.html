@@ -1,6 +1,7 @@
 <!-- <h1>Hello world</h1> -->
  <!-- <button (click)="callGreet()">Greet</button> -->
 <div class="container-fluid">
+    <!-- <div [ngStyle]="{'margin-top':loginState.platform() === 'Android' ? '23px' :'0px','padding-top':loginState.platform() === 'Android' ? '8px' :'0px'}" ></div> -->
     <section class="row">
         <div class="col-12">
             <div class="container-fluid d-flex justify-content-end mt-3" style="width: 80%;">
@@ -23,10 +24,11 @@
         </div>
     </section>
     <section class="row">
-        <div class="col-12">
+        <div class="col-12" >
             <router-outlet />
         </div>
 
     </section>
+    <!-- <div [ngStyle]="{'margin-bottom':loginState.platform() === 'Android' ? '35px' :'0px','padding-bottom':loginState.platform() === 'Android' ? '8px' :'0px'}" ></div> -->
 </div>
 

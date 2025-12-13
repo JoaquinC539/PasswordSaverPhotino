@@ -9,12 +9,12 @@ export class LoginStateService {
     private isLogged: WritableSignal<boolean> = signal<boolean>(false);
     public errorMessage: WritableSignal<string> = signal<string>("");
     private readonly maxTime = 1000 * 60 * 15;
-    private readonly maxIdleTime = 1000 * 60 * 4;
+    private readonly maxIdleTime = 1000 * 60 * 2;
     private isToCloseStandard: WritableSignal<boolean> = signal<boolean>(false);
     private standardTimeOut: any = null;
     private isToCloseTimeOut: any = null;
     private awayTimeOut: any = null;
-
+    public platform = signal<string>("");
     constructor(private router: Router, private passwordService: PasswordService) {
         effect(() => {
             if (this.IsLogged) {
@@ -79,9 +79,11 @@ export class LoginStateService {
         window.addEventListener("click", this.resetAwayTimeOut);
         window.addEventListener("scroll", this.resetAwayTimeOut);
         window.addEventListener("touchstart", this.resetAwayTimeOut);
+        
 
     }
     private resetAwayTimeOut=():void=>{
+        // console.log("Activity restarted");
         clearTimeout(this.awayTimeOut);
         this.startAwayTimeOut();
     }

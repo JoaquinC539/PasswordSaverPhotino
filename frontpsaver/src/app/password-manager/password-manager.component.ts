@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { Password, PasswordShow } from '../interfaces/data';
 import dayjs from "dayjs";
 import { ScreenLoaderComponent } from '../screen-loader/screen-loader.component';
+import { LoginStateService } from '../services/loginState.service';
 
 @Component({
   selector: 'app-password-manager',
@@ -21,10 +22,11 @@ export class PasswordManagerComponent implements OnInit {
   siteNameFilter=signal<string>("");
 
   private searchTimeout:any;
-  constructor(private passwordService:PasswordService){}
+  constructor(private passwordService:PasswordService, private loginstate:LoginStateService){}
   async getPasswords(){
     this.loading.set(true)
-    const passwords = await this.passwordService.getPasswords()
+    try {
+      const passwords = await this.passwordService.getPasswords()
     if(!passwords){
       this.errorMessage.set("Error in getting passwords, restart the app")
        return;
@@ -33,11 +35,21 @@ export class PasswordManagerComponent implements OnInit {
       this.passwords.set(dataWithShow);
       this.passwordsArray=(dataWithShow);
       this.loading.set(false);
+    } catch (error) {
+      this.errorMessage.set("Error in getting passwords, making logout in 3 seconds")
+      setTimeout(()=>{
+        this.loginstate.logout();
+      },3000)
+
+    }finally{
+      this.loading.set(false);
+    }
+    
   }
   ngOnInit(): void {
       window.resizeTo(1450,600)
       this.getPasswords();
-      this.getPlatform();
+      // this.getPlatform();
   }
   async getPlatform(){
     const res= await this.passwordService.getPlatform();
