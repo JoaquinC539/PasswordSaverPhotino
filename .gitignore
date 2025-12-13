@@ -15,3 +15,5 @@ releases.zip
 GenerateCertificate.ps1
 Platforms/Windows/Package.appxmanifest
 Platforms/Windows/Package.appxmanifest
+*.keystore
+androidsideloadpublish.ps1
