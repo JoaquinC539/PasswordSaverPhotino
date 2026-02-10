@@ -19,13 +19,24 @@ public class Program
             
             LocalWebServer webServer = LocalWebServer.GetLocalWebServer();
             webServer.StartServer();
-            Console.ReadLine();
-            // WebKit.Module.Initialize();
-            // var application = Gtk.Application.New("org.gir.core",Gio.ApplicationFlags.FlagsNone);
-            // application.OnActivate += (sender, _) =>
-            // {
-            //     var webView=WebKit.WebView.New();
-            // }
+            WebKit.Module.Initialize();
+            var application = Gtk.Application.New("org.gir.core",Gio.ApplicationFlags.FlagsNone);
+            application.OnActivate += (sender, _) =>
+            {
+                var webView=WebKit.WebView.New();               
+                webView.HeightRequest=900;
+                webView.WidthRequest=1200;
+                
+                webView.LoadUri("http://localhost:7614");
+                
+                var window = Gtk.ApplicationWindow.New((Gtk.Application) sender);
+                window.Title = "Password Saver";
+                window.SetChild(webView);
+                window.Resizable=true;
+                
+                window.Show();
+            };
+            application.RunWithSynchronizationContext(null);
 
 
         }
