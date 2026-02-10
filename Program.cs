@@ -27,7 +27,7 @@ public class Program
                 webView.HeightRequest=900;
                 webView.WidthRequest=1200;
                 
-                webView.LoadUri("http://localhost:7614");
+                webView.LoadUri(webServer.BaseUrl);
                 
                 var window = Gtk.ApplicationWindow.New((Gtk.Application) sender);
                 window.Title = "Password Saver";
