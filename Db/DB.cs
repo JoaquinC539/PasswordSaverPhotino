@@ -29,8 +29,6 @@ public class DB
 
         Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"PasswordSaver"));
         string configFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"PasswordSaver","psaverConfig.json");
-
-        
         Console.WriteLine($"path to create files {configFile}");
         return configFile;
 

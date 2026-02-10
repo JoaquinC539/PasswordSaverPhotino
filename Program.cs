@@ -1,6 +1,7 @@
 ﻿
 
 
+using PasswordSaver.Database;
 using PasswordSaver.Services;
 namespace PasswordSaver;
 public class Program
@@ -16,7 +17,8 @@ public class Program
         }
         try
         {
-            
+            DB db = DB.GetDB();
+            db.CreateOrCheckTables();
             LocalWebServer webServer = LocalWebServer.GetLocalWebServer();
             webServer.StartServer();
             WebKit.Module.Initialize();
