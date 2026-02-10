@@ -1,14 +1,17 @@
 using EmbedIO;
 using EmbedIO.Routing;
 using EmbedIO.WebApi;
+using PasswordSaver.Models;
 
 namespace PasswordSaver.Controllers;
 
 public class ApiController : WebApiController
 {
+
+    private OmniPasswordController omniPasswordController;
     public ApiController()
     {
-        
+        omniPasswordController = OmniPasswordController.GetInstance();
     }
 
     public class PostMessage
@@ -40,5 +43,50 @@ public class ApiController : WebApiController
         return new PostMessage {Message = "Hello rom Server", Error = false};
     }
 
+    [Route(HttpVerbs.Post,"/passwords")]
+    public async Task<Response> HandlePasswordRoute()
+    {
+        try
+        {
 
+            string body = await HttpContext.GetRequestBodyAsStringAsync();
+            return await omniPasswordController.HandleOmniControllerAsync(body);
+        }
+        catch (IncompleteDataException e)
+        {
+            Response.StatusCode = 400;
+            return new Response { Id = 0, Type = "failure", Success = false, Error = "Incomplete data exception: " + e.Message };
+        }
+        catch (PermissionDeniedException e)
+        {
+            Response.StatusCode = 403;
+            return new Response {Id =0, Type="failure", Success=false, Error=$"PermissionDeniedException: {e}"};
+        }
+        catch (NullDataException e)
+        {
+            Response.StatusCode = 503;
+            return new Response { Id = 0, Type = "failure", Success = false, Error = "Null data exception: " + e.Message };
+        }
+        catch( NotImplementedException e)
+        {
+            Response.StatusCode = 405;
+            return new Response {Id = 0, Type = "failure", Success = false, Error = "Not implemented exception: " + e.Message};
+        }
+        catch(IOException e)
+        {
+            Response.StatusCode = 403;
+            return new Response {Id =0, Type="failure", Success=false, Error=$"IOException: {e}"};
+        }
+        catch (TaskCanceledException)
+        {
+            Response.StatusCode = 400;
+            return new Response { Id=0,Type="failure",Success=false,Error=$"Operation cancelled"};
+        }
+        catch (Exception e)
+        {
+            Response.StatusCode = 500;
+            return new Response { Id = 0, Type = "failure", Success = false, Error = e.Message };
+        }
+
+    }
 }

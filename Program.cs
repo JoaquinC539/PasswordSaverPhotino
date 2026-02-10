@@ -23,9 +23,10 @@ public class Program
             var application = Gtk.Application.New("org.gir.core",Gio.ApplicationFlags.FlagsNone);
             application.OnActivate += (sender, _) =>
             {
-                var webView=WebKit.WebView.New();               
-                webView.HeightRequest=900;
-                webView.WidthRequest=1200;
+                var webView=WebKit.WebView.New();   
+                webView.WidthRequest=500;            
+                webView.HeightRequest=300;
+                
                 
                 webView.LoadUri(webServer.BaseUrl);
                 
@@ -33,7 +34,8 @@ public class Program
                 window.Title = "Password Saver";
                 window.SetChild(webView);
                 window.Resizable=true;
-                
+                window.DefaultWidth=1200;
+                window.DefaultHeight=900;                
                 window.Show();
             };
             application.RunWithSynchronizationContext(null);
@@ -44,7 +46,7 @@ public class Program
         {
 
             Console.WriteLine("An exception occurred it might have to be because it requires webkit 6");
-            Console.WriteLine("Please run sudo apt install libwebkitgtk-6.0-dev and try again");
+            Console.WriteLine("Please run sudo apt install libwebkitgtk-6.0 and try again");
             throw;
         }
     }
