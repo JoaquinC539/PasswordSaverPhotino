@@ -19,10 +19,15 @@ public class OmniPasswordController
     {
         GreetController greet = new GreetController();
         NotFoundController notFound = new NotFoundController();
+        MasterPasswordController masterPassword = new MasterPasswordController();
         routes = new Dictionary<string, Func<Request, Task<object?>>>
         {
             ["greet"] = req=>greet.HandleAsyncTask(req),
-            ["notFound"] = req => notFound.HandleAsyncTask(req)
+            ["notFound"] = req => notFound.HandleAsyncTask(req),
+            ["count"] = req => masterPassword.HandleAsyncTask(req),
+            ["setMaster"] = req => masterPassword.SetMasterPassword(req),
+            ["login"] = req => masterPassword.Login(req),
+            ["logout"] = req => masterPassword.Logout(req),
         };
     }
      public static OmniPasswordController GetInstance()
