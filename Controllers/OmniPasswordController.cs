@@ -20,6 +20,7 @@ public class OmniPasswordController
         GreetController greet = new GreetController();
         NotFoundController notFound = new NotFoundController();
         MasterPasswordController masterPassword = new MasterPasswordController();
+        PasswordController password = new PasswordController();
         routes = new Dictionary<string, Func<Request, Task<object?>>>
         {
             ["greet"] = req=>greet.HandleAsyncTask(req),
@@ -28,6 +29,11 @@ public class OmniPasswordController
             ["setMaster"] = req => masterPassword.SetMasterPassword(req),
             ["login"] = req => masterPassword.Login(req),
             ["logout"] = req => masterPassword.Logout(req),
+            ["getPasswords"] = req => password.HandleAsyncTask(req),
+            ["addPassword"] = req => password.InsertPassword(req),
+            ["getPassword"] = req => password.GetPassword(req),
+            ["updatePassword"] = req => password.UpdatePassword(req),
+            ["deletePassword"] = req => password.DeletePassword(req),
         };
     }
      public static OmniPasswordController GetInstance()
