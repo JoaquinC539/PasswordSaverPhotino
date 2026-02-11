@@ -39,6 +39,7 @@ public class Program
                 window.DefaultWidth=1200;
                 window.DefaultHeight=900;                
                 window.Show();
+                
             };
             application.RunWithSynchronizationContext(null);
 

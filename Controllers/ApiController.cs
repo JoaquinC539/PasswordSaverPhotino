@@ -82,6 +82,11 @@ public class ApiController : WebApiController
             Response.StatusCode = 400;
             return new Response { Id=0,Type="failure",Success=false,Error=$"Operation cancelled"};
         }
+        catch (NotValidException)
+        {
+            Response.StatusCode = 406;
+            return new Response {Id=0,Type="failure",Success=false,Error=$"Not valid format file"};
+        }
         catch (Exception e)
         {
             Response.StatusCode = 500;
