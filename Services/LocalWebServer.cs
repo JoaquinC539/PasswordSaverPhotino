@@ -24,7 +24,7 @@ public class LocalWebServer
 
     private LocalWebServer()
     {
-        // port = GetFreePort();
+        port = GetFreePort();
         rootpath = GetStaticUiRootPath(UiFolderName);
         webServer = CreateWebServer(HostUrl,rootpath);
         Console.WriteLine($"Using this host: {HostUrl}");

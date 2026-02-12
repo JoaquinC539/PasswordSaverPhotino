@@ -23,6 +23,7 @@ public class Program
             webServer.StartServer();
             WebKit.Module.Initialize();
             var application = Gtk.Application.New("org.gir.core",Gio.ApplicationFlags.FlagsNone);
+            
             application.OnActivate += (sender, _) =>
             {
                 var webView=WebKit.WebView.New();   
@@ -34,11 +35,15 @@ public class Program
                 
                 var window = Gtk.ApplicationWindow.New((Gtk.Application) sender);
                 window.Title = "Password Saver";
+                var iconFile = Path.Combine(AppContext.BaseDirectory,"Resources","AppIcon","appicon.png");  
+                window.SetIconName(iconFile);  
+                window.IconName=iconFile;                            
                 window.SetChild(webView);
                 window.Resizable=true;
                 window.DefaultWidth=1200;
                 window.DefaultHeight=900;                
                 window.Show();
+                
                 
             };
             application.RunWithSynchronizationContext(null);

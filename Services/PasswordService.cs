@@ -11,8 +11,6 @@ public class PasswordService
 
     private MasterPasswordService masterPasswordService;
 
-    private string EncryptKey = "";
-
     private PasswordService()
     {
         masterPasswordService = MasterPasswordService.GetInstance();
@@ -32,8 +30,8 @@ public class PasswordService
      public string SetAndGetEncryptKey()
     {
        
-        EncryptKey = masterPasswordService.GetEncryptKey();
-        return EncryptKey;
+        string key = masterPasswordService.GetEncryptKey();
+        return key;
     }
     public async Task<List<Password>?> GetAllPasswordsAsync()
     {
@@ -55,7 +53,7 @@ public class PasswordService
     }
     public List<Password> GeneratePasswordsFromQuery(List<Dictionary<string, object>> rows)
     {
-        SetAndGetEncryptKey();
+        string key= SetAndGetEncryptKey();
         var result = new List<Password>();
         foreach (var row in rows)
         {
@@ -64,7 +62,7 @@ public class PasswordService
                 Id = Convert.ToInt32(row["id"]),
                 Name = row["name"].ToString()!,
                 Username = row["username"].ToString()!,
-                PasswordValue = CryptoUtils.Decrypt(row["password"].ToString()!, EncryptKey),
+                PasswordValue = CryptoUtils.Decrypt(row["password"].ToString()!, key),
                 Notes = row.ContainsKey("notes") ? row["notes"]?.ToString() ?? "" : "",
                 CreatedAt = row.ContainsKey("created_at") ? DateTime.Parse(row["created_at"].ToString()!) : DateTime.MinValue
             };
