@@ -5,7 +5,7 @@ public class Pickers
 {
     public static async Task<string> PickFileAsyncGtk4(string title,string[]? patterns ,Gtk.Window? parent)
     {
-        var tcs = new TaskCompletionSource<string?>();
+        // var tcs = new TaskCompletionSource<string?>();
         var dialog = FileDialog.New();
         dialog.Title = title;
 
@@ -27,9 +27,22 @@ public class Pickers
             throw new TaskCanceledException();
         }
         
-        string filePath=file.GetPath();
+        string filePath=file!.GetPath();
         if(!filePath!.EndsWith(".db")) throw new NotValidException("Not valid file");
         
         return filePath;
+    }
+
+    public static async Task<string> PickFolderAsyncGtk4(string title, Window? parent)
+    {
+        var dialog = FileDialog.New();
+        dialog.Title=title;
+        var dir=await dialog.SelectFolderAsync(parent);
+        if(dir == null)
+        {
+            throw new TaskCanceledException();
+        }
+        return dir!.GetPath();
+        
     }
 }

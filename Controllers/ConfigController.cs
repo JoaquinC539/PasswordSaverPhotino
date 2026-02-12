@@ -13,4 +13,8 @@ public class ConfigController : IController
         return result;
         // return Task.FromResult<object?>(Path.Combine(AppContext.BaseDirectory,".."));
     }
+    public async Task<object?> MakeBackup(Request req)
+    {
+        return await configService.CopyToDirDb();
+    }
 }

@@ -36,6 +36,7 @@ public class OmniPasswordController
             ["updatePassword"] = req => password.UpdatePassword(req),
             ["deletePassword"] = req => password.DeletePassword(req),
             ["dbLocation"] = req=>config.HandleAsyncTask(req),
+            ["backup"] = req => config.MakeBackup(req)
         };
     }
      public static OmniPasswordController GetInstance()

@@ -39,4 +39,14 @@ public class ConfigService
         db.ReStartDB();
         return true;
     }
+
+    public async Task<bool> CopyToDirDb()
+    {
+        var path= await Pickers.PickFolderAsyncGtk4("Select a Folder to backup db",null);
+        string fileName = $"CipheredBackup_{DateTime.Now.ToString("ddMMyy")}.db";
+        string destfilePath=$"{path}/{fileName}";
+        string sqlQuery =$"VACUUM main INTO '{destfilePath.Replace("'", "''")}'";
+        bool res=db.ExecQuery(sqlQuery);
+        return res;
+    }
 }
