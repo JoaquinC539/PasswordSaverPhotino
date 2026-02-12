@@ -15,7 +15,6 @@ public class DB
     private DB()
     {
         DbPath = GetConfigJson();
-        Console.WriteLine(DbPath);
         CheckOrCreateDB();
     }
 
@@ -105,7 +104,7 @@ public class DB
     {
         try
         {   
-            Console.WriteLine($"Trying to connect to {DbPath}");
+            // Console.WriteLine($"Trying to connect to {DbPath}");
             string connectionString = $"Data Source={DbPath}";
             connection = new SqliteConnection(connectionString);
             connection.Open();

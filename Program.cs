@@ -8,7 +8,6 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Console.WriteLine("Hello World");
         bool IsLinux = OperatingSystem.IsLinux();
         if (!IsLinux)
         {
@@ -22,7 +21,7 @@ public class Program
             LocalWebServer webServer = LocalWebServer.GetLocalWebServer();
             webServer.StartServer();
             WebKit.Module.Initialize();
-            var application = Gtk.Application.New("org.gir.core",Gio.ApplicationFlags.FlagsNone);
+            var application = Gtk.Application.New("com.JCOpenSoftware.PasswordSaver",Gio.ApplicationFlags.FlagsNone);
             
             application.OnActivate += (sender, _) =>
             {
@@ -32,12 +31,13 @@ public class Program
                 
                 
                 webView.LoadUri(webServer.BaseUrl);
-                
+                Gtk.Window.SetDefaultIconName("com.JCOpenSoftware.PasswordSaver");
                 var window = Gtk.ApplicationWindow.New((Gtk.Application) sender);
                 window.Title = "Password Saver";
-                var iconFile = Path.Combine(AppContext.BaseDirectory,"Resources","AppIcon","appicon.png");  
-                window.SetIconName(iconFile);  
-                window.IconName=iconFile;                            
+                var iconsPath = Path.Combine(AppContext.BaseDirectory,"Resources","AppIcon"); 
+                var iconTheme = Gtk.IconTheme.GetForDisplay(window.Display);
+                iconTheme.AddSearchPath(iconsPath);
+                window.SetIconName("com.JCOpenSoftware.PasswordSaver");                
                 window.SetChild(webView);
                 window.Resizable=true;
                 window.DefaultWidth=1200;
