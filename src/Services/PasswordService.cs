@@ -27,10 +27,10 @@ public class PasswordService
         }
         return instance;
     }
-     public string SetAndGetEncryptKey()
+     public async Task<string> SetAndGetEncryptKey()
     {
        
-        string key = masterPasswordService.GetEncryptKey();
+        string key = await masterPasswordService.GetEncryptKey();
         return key;
     }
     public async Task<List<Password>?> GetAllPasswordsAsync()
@@ -41,7 +41,7 @@ public class PasswordService
             
             var rows = await dB.ExecQueryReturnAsync(sqlScript);
             if (rows == null) return null;
-            var passwords = GeneratePasswordsFromQuery(rows);
+            var passwords = await GeneratePasswordsFromQuery(rows);
             return passwords;
 
         }
@@ -51,9 +51,9 @@ public class PasswordService
             return null;
         }
     }
-    public List<Password> GeneratePasswordsFromQuery(List<Dictionary<string, object>> rows)
+    public async Task<List<Password>> GeneratePasswordsFromQuery(List<Dictionary<string, object>> rows)
     {
-        string key= SetAndGetEncryptKey();
+        string key= await SetAndGetEncryptKey();
         var result = new List<Password>();
         foreach (var row in rows)
         {
@@ -70,11 +70,11 @@ public class PasswordService
         }
         return result;
     }
-    public Task<bool?> AddPasswordAsync(PasswordDto password)
+    public async Task<bool?> AddPasswordAsync(PasswordDto password)
     {
         try
         {
-            string key = SetAndGetEncryptKey();
+            string key = await SetAndGetEncryptKey();
             string encryptedPassword = CryptoUtils.Encrypt(password.PasswordValue, key);
             var columns = new List<string> { "name", "username", "password" };
             var placeholders = new List<string> { "@p0", "@p1", "@p2" };
@@ -87,7 +87,7 @@ public class PasswordService
             }
             string sqlScript = $"INSERT INTO passwords ({string.Join(",", columns)}) VALUES ({string.Join(",", placeholders)});";
             bool inserted = dB.PreparedQuery(sqlScript, paramenters.ToArray());
-            return Task.FromResult((bool?)inserted);
+            return inserted;
 
         }
         catch (Exception ex)
@@ -103,7 +103,7 @@ public class PasswordService
         {
             var row = await dB.PreparedQueryReturnAsync(sqlScript, id);
             if (row == null) return null;
-            var passwordList = GeneratePasswordsFromQuery(row);
+            var passwordList = await GeneratePasswordsFromQuery(row);
             return passwordList[0];
         }
         catch (System.Exception ex)
@@ -112,11 +112,11 @@ public class PasswordService
             throw;
         }
     }
-    public Task<bool?> EditPasswordAsync(PasswordDto password)
+    public async Task<bool?> EditPasswordAsync(PasswordDto password)
     {
         try
         {
-            string key = SetAndGetEncryptKey();
+            string key = await SetAndGetEncryptKey();
             string encryptedPassword = CryptoUtils.Encrypt(password.PasswordValue, key);
             var columns = new List<string> { "name", "username", "password" };
             var paramenters = new List<object> { password.Name, password.Username, encryptedPassword };
@@ -145,7 +145,7 @@ public class PasswordService
             ";
             paramenters.Add(password.Id!);
             bool inserted = dB.PreparedQuery(sqlScript, paramenters.ToArray());
-            return Task.FromResult((bool?)inserted);
+            return inserted;
 
         }
         catch (Exception ex)

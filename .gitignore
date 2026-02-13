@@ -2,3 +2,5 @@ build-dir
 flatpak/icons
 publish
 .flatpak-builder
+*.flatpak
+repo

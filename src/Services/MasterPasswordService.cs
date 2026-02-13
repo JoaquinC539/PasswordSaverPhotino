@@ -8,8 +8,9 @@ namespace PasswordSaver.Services;
 public class MasterPasswordService
 {
     private static MasterPasswordService? instance = null;
-    private DB dB = DB.GetDB();
-    private string encryptionKey = "";
+    private DB dB = DB.GetDB();    
+
+    private TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
 
     private MasterPasswordService(){}
     public static MasterPasswordService GetInstance()
@@ -46,18 +47,7 @@ public class MasterPasswordService
         return Convert.ToBase64String(keyBytes);
     }
 
-    public string GetEncryptKey()
-    {
-
-        if (encryptionKey == "")
-        {
-            throw new InvalidOperationException(
-                $"Encryption key not initialized on instance {GetHashCode()}. " +
-                $"Current thread: {Environment.CurrentManagedThreadId}. " +
-                "Did you call VerifyPassword first?");
-        }
-        return encryptionKey;
-    }
+    
 
     public Task<bool> InsertMasterPasswordAsync(string password)
     {
@@ -70,7 +60,7 @@ public class MasterPasswordService
             string sql = "INSERT INTO mainPassword (password_hash, key_salt) VALUES (@p0, @p1);";
             bool inserted = dB.PreparedQuery(sql, hashPassword, keySalt);
 
-            encryptionKey = GenerateEncryptKey(password, keySalt);
+            SetEncryptKey(password,keySalt);
 
             return Task.FromResult((bool)inserted);
         }
@@ -96,7 +86,7 @@ public class MasterPasswordService
             {
 
                 Console.WriteLine("Setting encryptkey");
-                encryptionKey = GenerateEncryptKey(password, keySalt);
+                SetEncryptKey(password,keySalt);
                 // System.Threading.Interlocked.MemoryBarrier();
             }
             return samePassword;
@@ -107,9 +97,39 @@ public class MasterPasswordService
         }
     }
 
-    public void MakeLogoutAsync()
+    
+
+    private void SetEncryptKey(string password, string salt)
     {
-        encryptionKey = "";
+
+        var key = GenerateEncryptKey(password,salt);
+        var newTcs = new TaskCompletionSource<string>();
+        newTcs.TrySetResult(key);
+        Interlocked.Exchange(ref tcs,newTcs);
+        Console.WriteLine("Setted encrypt key");
+        // tcs.TrySetResult(key);
+    }
+    public async Task<string> GetEncryptKey()
+    {
+        var _tcs = tcs;
+        string key = await _tcs.Task;
+        if (string.IsNullOrEmpty(key))
+        {
+            throw new InvalidOperationException(
+                $"Encryption key not initialized on instance {GetHashCode()}. " +
+                $"Current thread: {Environment.CurrentManagedThreadId}. " );
+        }
+        Console.WriteLine("Somebody accessed the key");
+        return key;
+        
     }
 
+    public void MakeLogoutAsync()
+    {
+
+        var newTcs = new TaskCompletionSource<string>();
+        Interlocked.Exchange(ref tcs,newTcs);
+        Console.WriteLine("clearing key");
+        
+    }
 }
