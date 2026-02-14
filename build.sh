@@ -14,7 +14,6 @@ cp -r ./dist/browser ../
 cd ..
 
 dotnet publish -c Release -r linux-x64 --self-contained true PasswordSaver.csproj
-pwd
 cp -r ./bin/Release/net10.0/linux-x64/publish ../
 
 rm -rf ../flatpak/icons
