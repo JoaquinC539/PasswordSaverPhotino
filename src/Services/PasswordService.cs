@@ -1,32 +1,25 @@
 namespace PasswordSaver.Services;
 
+using Microsoft.Extensions.DependencyInjection;
 using PasswordSaver.Database;
 using PasswordSaver.Models;
 using PasswordSaver.Utils;
 public class PasswordService
 {
-    private static PasswordService? instance = null;
+    public static PasswordService? instance = null;
 
     private DB dB = DB.GetDB();
 
     private MasterPasswordService masterPasswordService;
 
-    private PasswordService()
+    public PasswordService()
     {
-        masterPasswordService = MasterPasswordService.GetInstance();
+        masterPasswordService = ServiceLocator.ServiceProvider.GetService<MasterPasswordService>();
         if(masterPasswordService == null)
         {
             throw new NotImplementedException("masterPasswordService not initated");
         }
-    }
-    public static PasswordService GetInstance()
-    {
-        if (instance == null)
-        {
-            instance = new PasswordService();
-        }
-        return instance;
-    }
+    }   
      public async Task<string> SetAndGetEncryptKey()
     {
        

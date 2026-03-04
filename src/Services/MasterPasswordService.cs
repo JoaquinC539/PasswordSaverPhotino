@@ -1,26 +1,19 @@
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Hosting;
 using PasswordSaver.Database;
 using PasswordSaver.Models;
 
 namespace PasswordSaver.Services;
 
-public class MasterPasswordService
+public class MasterPasswordService 
 {
     private static MasterPasswordService? instance = null;
     private DB dB = DB.GetDB();    
 
     private TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
 
-    private MasterPasswordService(){}
-    public static MasterPasswordService GetInstance()
-    {
-        if (instance == null)
-        {
-            instance = new MasterPasswordService();
-        }
-        return instance;
-    }
+    public MasterPasswordService(){}    
 
     public async Task<int?> GetMasterPasswordCountAsync()
     {

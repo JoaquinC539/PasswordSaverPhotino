@@ -1,8 +1,10 @@
 namespace PasswordSaver.Controllers;
 
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 using PasswordSaver.Models;
 using PasswordSaver.Services;
+using PasswordSaver.Utils;
 
 public class PasswordController : IController
 {
@@ -10,7 +12,8 @@ public class PasswordController : IController
 
     public PasswordController()
     {
-        passwordService = PasswordService.GetInstance();
+        passwordService = ServiceLocator.ServiceProvider.GetService<PasswordService>();
+        // passwordService = PasswordService.GetInstance();
     }
 
     public async Task<object?> HandleAsyncTask(Request req)

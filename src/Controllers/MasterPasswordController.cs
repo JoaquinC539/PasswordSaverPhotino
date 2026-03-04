@@ -1,5 +1,7 @@
+using Microsoft.Extensions.DependencyInjection;
 using PasswordSaver.Models;
 using PasswordSaver.Services;
+using PasswordSaver.Utils;
 
 namespace PasswordSaver.Controllers;
 
@@ -9,7 +11,7 @@ public class MasterPasswordController : IController
 
     public MasterPasswordController()
     {
-        masterPasswordService = MasterPasswordService.GetInstance();
+       masterPasswordService = ServiceLocator.ServiceProvider.GetService<MasterPasswordService>();
         if(masterPasswordService == null)
         {
             throw new NotImplementedException("Master Password Service was not initialized");
