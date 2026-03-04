@@ -8,7 +8,10 @@ namespace PasswordSaver.Services;
 
 public class MasterPasswordService 
 {
-    private static MasterPasswordService? instance = null;
+
+    private readonly object _lock = new object();
+
+    private string key = string.Empty;
     private DB dB = DB.GetDB();    
 
     private TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
@@ -94,35 +97,32 @@ public class MasterPasswordService
 
     private void SetEncryptKey(string password, string salt)
     {
-
-        var key = GenerateEncryptKey(password,salt);
-        var newTcs = new TaskCompletionSource<string>();
-        newTcs.TrySetResult(key);
-        Interlocked.Exchange(ref tcs,newTcs);
-        Console.WriteLine("Setted encrypt key");
-        // tcs.TrySetResult(key);
+        lock (_lock)
+        {
+            var key = GenerateEncryptKey(password,salt);
+            this.key=key; 
+        }
     }
     public async Task<string> GetEncryptKey()
     {
-        var _tcs = tcs;
-        string key = await _tcs.Task;
-        if (string.IsNullOrEmpty(key))
+        lock (_lock)
         {
-            throw new InvalidOperationException(
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new InvalidOperationException(
                 $"Encryption key not initialized on instance {GetHashCode()}. " +
                 $"Current thread: {Environment.CurrentManagedThreadId}. " );
+            }
+            Console.WriteLine("key accessed");
+            return key;
         }
-        Console.WriteLine("Somebody accessed the key");
-        return key;
-        
     }
 
     public void MakeLogoutAsync()
     {
-
-        var newTcs = new TaskCompletionSource<string>();
-        Interlocked.Exchange(ref tcs,newTcs);
-        Console.WriteLine("clearing key");
-        
+        lock (_lock)
+        {
+            key=string.Empty;
+        }        
     }
 }
